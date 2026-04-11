@@ -11,6 +11,7 @@ pip install numpy scipy pygame
 - [ ] Build a 2d / 3d renderer based on Pyglet
   - [ ] Implement collisions
 - [ ] Springs
+- [ ] Diff eq. support
 - [ ] Two-body problems
 - [ ] N-body problems
 - [ ] Particle simulation
