@@ -30,13 +30,14 @@ def main():
     x_exact, v_exact = sho_solved(x_0, v_0, m, k, t)
 
     dt = t[1]
-    x_diff = [x_0]
+    x_diff = [1.0]
     v_diff = [v_0]
 
     for i in range(len(t)-1):
         x_dt, v_dt = sho_diff(x_diff[-1], v_diff[-1], m, k, dt)
         x_diff.append(x_dt)
         v_diff.append(v_dt)
+        # print(f"x: {x_diff[i]}, v: {v_diff[i]}, dt: {dt}")
 
     # plotting x values 
     
