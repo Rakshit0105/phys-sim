@@ -45,7 +45,7 @@ def world_to_screen_y(y_pos):
 
 # draw circle at x, y in meters
 def draw(x_pos, y_pos):
-    print(world_to_screen_x(x_pos), world_to_screen_y(y_pos), window.width, window.height)
+    # print(world_to_screen_x(x_pos), world_to_screen_y(y_pos), window.width, window.height)
     circle = pg.shapes.Circle(
         x=world_to_screen_x(x_pos),
         y=world_to_screen_y(y_pos),
