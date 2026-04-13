@@ -4,14 +4,14 @@ import pyglet as pg
 def __init__(window_width=1280, window_height=720, world_width=64, world_height=36):
     # globals
     global WINDOW_WIDTH, WINDOW_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT 
-    WINDOW_WIDTH = window_width*2
-    WINDOW_HEIGHT = window_height*2
+    WINDOW_WIDTH = window_width
+    WINDOW_HEIGHT = window_height
     WORLD_WIDTH = world_width
     WORLD_HEIGHT = world_height
 
     # initialize pyglet
     global window
-    window = pg.window.Window(width=WINDOW_WIDTH/2, height=WINDOW_HEIGHT/2)
+    window = pg.window.Window(width=int(WINDOW_WIDTH), height=int(WINDOW_HEIGHT))
 
     global batch
     batch = pg.graphics.Batch()
