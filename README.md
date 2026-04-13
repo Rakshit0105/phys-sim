@@ -8,10 +8,11 @@ pip install numpy scipy pygame pyglet matplotlib
 
 # To-do
 - [x] Gravity on Earth
-- [ ] Build a 2d / 3d renderer based on Pyglet
+- [x] Build a 2d / 3d renderer based on Pyglet
+  - [ ] Implement multi-object rendering
   - [ ] Implement collisions
-- [ ] Springs
-- [ ] Diff eq. support
+- [x] Springs
+- [x] Diff eq. support
 - [ ] Two-body problems
 - [ ] N-body problems
 - [ ] Particle simulation
