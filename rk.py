@@ -1,40 +1,24 @@
-import numpy as np 
-import matplotlib.pyplot as plt 
+def rk(f, t_i, y_i, t_f, h=0.1):
+    y_0 = y_i
+    t_0 = t_i
+    t_final = t_f
+    step_size = h 
 
-step_size = 0.01
-y_0 = 0.1
-t_0 = 0.1 
-t_final = 10
-num_iter = 0 
+    y = [y_0]
+    t = [t_0]
+    iter = 0 # number of iteratinos
 
-# dy/dt = y^2 
-def f(t, y):
-    return 2*t 
+    while (t[-1] < t_final):
+        k_1 = f(t[-1], y[-1])
+        k_2 = f(t[-1]+step_size/2, y[-1]+k_1*step_size/2)
+        k_3 = f(t[-1]+step_size/2, y[-1]+k_2*step_size/2)
+        k_4 = f(t[-1]+step_size, y[-1]+k_3*step_size)
 
-y = [y_0]
-t = [t_0]
+        t_next = t[-1] + step_size
+        y_next = y[-1] + step_size / 6 * (k_1 + 2*k_2 + 2*k_3 + k_4)
+        t.append(t_next)
+        y.append(y_next)
+    
+        iter += 1
 
-while (t[-1] < t_final):
-    k_1 = f(t[-1], y[-1])
-    k_2 = f(t[-1]+step_size/2, y[-1]+k_1*step_size/2)
-    k_3 = f(t[-1]+step_size/2, y[-1]+k_2*step_size/2)
-    k_4 = f(t[-1]+step_size, y[-1]+k_3*step_size)
-
-    t_next = t[-1] + step_size
-    y_next = y[-1] + step_size / 6 * (k_1 + 2*k_2 + 2*k_3 + k_4)
-    # print(f"{t_next}, {y_next}")
-    t.append(t_next)
-    y.append(y_next)
-
-    num_iter += 1 
-
-# def y_solved(t):
-#     return 1.0/(1.5-t)
-# t_arr = np.array(t)
-
-plt.plot(t, y, label="rk-4")
-# plt.plot(t_arr, y_solved(t_arr), label="exact", linestyle="dashed")
-plt.grid()
-plt.legend()
-plt.savefig("./rk.png")
-print(num_iter)
+    return t, y, iter
