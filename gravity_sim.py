@@ -45,7 +45,7 @@ def update(dt):
         last_x = x_pos[i]
 
     # print(x_pos[i], y_pos[i])
-    d.draw(x_pos[0], y_pos[0])
+    d.draw(x_pos[i], y_pos[i])
     i += 1
 
 pg.clock.schedule_interval(update, 1 / fps)

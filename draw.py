@@ -4,14 +4,14 @@ import pyglet as pg
 def __init__(window_width=1280, window_height=720, world_width=64, world_height=36):
     # globals
     global WINDOW_WIDTH, WINDOW_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT 
-    WINDOW_WIDTH = window_width
-    WINDOW_HEIGHT = window_height
+    WINDOW_WIDTH = window_width*2
+    WINDOW_HEIGHT = window_height*2
     WORLD_WIDTH = world_width
     WORLD_HEIGHT = world_height
 
     # initialize pyglet
     global window
-    window = pg.window.Window(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
+    window = pg.window.Window(width=WINDOW_WIDTH/2, height=WINDOW_HEIGHT/2)
 
     global batch
     batch = pg.graphics.Batch()
@@ -37,15 +37,15 @@ def set_world_height(height = 36):
 
 # convert from x in meters to x on screen
 def world_to_screen_x(x_pos):
-    return x_pos * WINDOW_WIDTH / WORLD_WIDTH
+    return WINDOW_WIDTH / 2 + x_pos * WINDOW_WIDTH / WORLD_WIDTH
 
 # convert from y in meters to y on screen
 def world_to_screen_y(y_pos):
-    return y_pos * WINDOW_HEIGHT / WORLD_HEIGHT
+    return WINDOW_HEIGHT / 2 + y_pos * WINDOW_HEIGHT / WORLD_HEIGHT
 
 # draw circle at x, y in meters
 def draw(x_pos, y_pos):
-    print(world_to_screen_x(x_pos), world_to_screen_y(y_pos))
+    print(world_to_screen_x(x_pos), world_to_screen_y(y_pos), window.width, window.height)
     circle = pg.shapes.Circle(
         x=world_to_screen_x(x_pos),
         y=world_to_screen_y(y_pos),
