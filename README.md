@@ -1,6 +1,6 @@
 # Setup
 ```bash
-pip install numpy scipy pygame
+pip install numpy scipy pygame pyglet matplotlib
 ```
 
 # Migration to Pyglet
