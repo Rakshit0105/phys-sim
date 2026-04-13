@@ -1,4 +1,5 @@
 # Implementation of RK4
+# Only works for single systems
 
 def rk(f, t_i, y_i, t_f, h=0.1):
     y_0 = y_i
