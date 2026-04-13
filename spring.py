@@ -26,7 +26,7 @@ def main():
     m = 1
     k = 1
    
-    t = np.linspace(0, 10, 1000)
+    t = np.linspace(0, 100, 10000)
     x_exact, v_exact = sho_solved(x_0, v_0, m, k, t)
 
     dt = t[1]
@@ -45,7 +45,7 @@ def main():
     plt.plot(t, x_exact, label="exact values")
     
     # diff eq values
-    plt.plot(t, x_diff, label="diff eq values")
+    plt.plot(t, v_diff, label="diff eq values")
 
     plt.legend()
     plt.grid()
