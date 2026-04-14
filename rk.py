@@ -24,10 +24,9 @@ def rk(f, t_i, y_i, t_f, h=0.1):
     return t, y, iter
 
 
-def rk_single(f, t_i, y_i, t_f, h=0.1):
+def rk_single(f, t_i, y_i, h=0.1):
     y = y_i
-    t = t_i
-    t_final = t_f
+    t = t_i 
     step_size = h 
 
     k_1 = f(t, y)
