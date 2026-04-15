@@ -8,8 +8,8 @@ fps = 60
 
 ord = 2
 
-x_0 = 10
-v_0 = 0
+x_0 = 18
+v_0 = -1
 
 b = 0.2
 m = 1
@@ -27,27 +27,38 @@ def f(t, xold, temp):
 
 # y = np.array(y)
 
-d.__init__()
+d.__init__(1280, 720, 64, 36, trail_length=3)
 
-t_curr = 0 
+t_curr = 0
+t_list = []
+y_pos = []
+
 def update(dt):
     global t_curr, xvec 
     
-    if t_curr >= 20:
+    if t_curr >= 20*60:
         return
+    
+    t_list.append(t_curr)
+    y_pos.append(xvec[0])
+    
+    d.start_frame()
+    d.draw_axes()
 
-    d.draw(0, xvec[0])
+    d.draw_trail(0, xvec[0])
+    
+    d.end_frame()
 
     t, y_next = rk_single(f, t_curr, xvec, 0)
-
-    xvec = np.array(y_next)
-
     
-    # print(y[:,1][i])
+    xvec = np.array(y_next)
+    t_curr = t 
 
 pg.clock.schedule_interval(update, 1 / fps)
 d.__run__()
 
-# plt.plot(t, y[:, 0])
-# plt.grid()
-# plt.savefig("./damp_osc.png")
+plt.plot(t_list, y_pos)
+plt.xlabel("time")
+plt.ylabel("y-pos")
+plt.grid()
+plt.savefig("./dampened_oscillator.png")
