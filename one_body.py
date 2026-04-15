@@ -2,15 +2,16 @@ import numpy as np
 from rk import * 
 import pyglet as pg
 import draw as d
+import matplotlib.pyplot as plt
 
 # d^2/dt^2 (r) = GM/r^2
-x_0 = 5
-y_0 = 3
-vx_0 = -1 
-vy_0 = 0
-t_final = 25
-G = 6.674e-11
-M = 1e13
+x_0 = 1 
+y_0 = 1
+vx_0 = -0.1  
+vy_0 = 0 
+t_final = 10
+G = 1 # 6.674e-11
+M = 1
 
 fps = 60
 
@@ -24,32 +25,12 @@ def f(t, x_old, y_old):
 
     return x_next
 
-def fy(t, y_old, x_old):
-    y_next = np.zeros(2)
-    y_next[0] = y_old[1]
-    y_next[1] = G*M*y_old[0] / (y_old[0]**2 + x_old[0]**2)**1.5
+d.__init__(1280, 720)
 
-    return y_next
-
-def test():
-    t_curr = 0
-    while (t_curr < t_final):
-        t, x_next = rk_single(f, t_curr, x, y)
-        t, y_next = rk_single(f, t_curr, y, x)
-        t_curr = t # proceed to next step
-        
-        x_next = np.array(x_next)
-        y_next = np.array(y_next)
-
-        # updates the pos and vel to next values
-        x = x_next 
-        y = y_next
-        
-        print(f"t: {round(t_curr, 3)};    x: {round(x[0], 4)};    y: {round(y[0], 4)}")
-
-d.__init__(1280, 720, 512, 288)
-
-t_curr = 0 
+t_curr = 0
+x_pos = []
+y_pos = [] 
+t_list = []
 def update(dt):
     global t_curr, x, y
     
@@ -58,7 +39,12 @@ def update(dt):
 
     d.draw(x[0], y[0])
 
-    print(f"t: {round(t_curr, 3)};    x: {round(x[0], 4)};    y: {round(y[0], 4)}")
+    # for plotting only
+    x_pos.append(x[0])
+    y_pos.append(y[0])
+    t_list.append(t_curr)
+
+    print(f"t: {round(t_curr, 3)};    x: {round(x[0], 4)};    y: {round(y[0], 4)};    v_x: {round(x[1], 4)};    v_y: {round(y[1], 4)}")
     
     t, x_next = rk_single(f, t_curr, x, y)
     t, y_next = rk_single(f, t_curr, y, x)
@@ -73,3 +59,7 @@ def update(dt):
 
 pg.clock.schedule_interval(update, 1/fps)
 d.__run__()
+
+plt.plot(x_pos, y_pos)
+plt.grid()
+plt.savefig("./one_body.png")
