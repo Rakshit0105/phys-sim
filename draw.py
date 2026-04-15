@@ -43,9 +43,14 @@ def world_to_screen_x(x_pos):
 def world_to_screen_y(y_pos):
     return WINDOW_HEIGHT / 2 + y_pos * WINDOW_HEIGHT / WORLD_HEIGHT
 
+def start_frame():
+    shapes.clear()
+
+def end_frame():
+    pass
+
 # draw circle at x, y in meters
 def draw(x_pos, y_pos):
-    # print(world_to_screen_x(x_pos), world_to_screen_y(y_pos), window.width, window.height)
     circle = pg.shapes.Circle(
         x=world_to_screen_x(x_pos),
         y=world_to_screen_y(y_pos),
@@ -53,12 +58,30 @@ def draw(x_pos, y_pos):
         color=(255,0,0),
         batch=batch
     )
-    shapes.clear()
     shapes.append(circle)
-    # pygame.draw.circle(SCREEN, "red", pygame.Vector2(pygamex(x_pos), pygamey(y_pos)), 10)
 
 # draw x and y axes
-# def draw_axes():
-#     pygame.draw.line(SCREEN, "white", pygame.Vector2(0, SCREEN.get_height() / 2), pygame.Vector2(SCREEN.get_width(), SCREEN.get_height() / 2));
-#     pygame.draw.line(SCREEN, "white", pygame.Vector2(SCREEN.get_width() / 2, 0), pygame.Vector2(SCREEN.get_width() / 2, SCREEN.get_height()));
+def draw_axes():
+    x_axis = pg.shapes.Line(
+        x=world_to_screen_x(-WORLD_WIDTH),
+        y=world_to_screen_y(0),
+        x2=world_to_screen_x(WORLD_WIDTH),
+        y2=world_to_screen_y(0),
+        thickness=4,
+        color=(255,255,255),
+        batch=batch
+    )
+
+    y_axis = pg.shapes.Line(
+        x=world_to_screen_x(0),
+        y=world_to_screen_y(-WORLD_HEIGHT),
+        x2=world_to_screen_x(0),
+        y2=world_to_screen_y(WORLD_HEIGHT),
+        thickness=4,
+        color=(255,255,255),
+        batch=batch
+    )
+
+    shapes.append(x_axis)
+    shapes.append(y_axis)
 
