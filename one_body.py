@@ -4,13 +4,13 @@ import pyglet as pg
 import draw as d
 
 # d^2/dt^2 (r) = GM/r^2
-x_0 = 10
+x_0 = 5
 y_0 = 3
-vx_0 = 4 
-vy_0 = 1 
-t_final = 5
-G = 1 #6.674e-11
-M = 1
+vx_0 = -1 
+vy_0 = 0
+t_final = 25
+G = 6.674e-11
+M = 1e13
 
 fps = 60
 
@@ -47,6 +47,8 @@ def test():
         
         print(f"t: {round(t_curr, 3)};    x: {round(x[0], 4)};    y: {round(y[0], 4)}")
 
+d.__init__(1280, 720, 512, 288)
+
 t_curr = 0 
 def update(dt):
     global t_curr, x, y
@@ -56,6 +58,8 @@ def update(dt):
 
     d.draw(x[0], y[0])
 
+    print(f"t: {round(t_curr, 3)};    x: {round(x[0], 4)};    y: {round(y[0], 4)}")
+    
     t, x_next = rk_single(f, t_curr, x, y)
     t, y_next = rk_single(f, t_curr, y, x)
     t_curr = t # proceed to next step
