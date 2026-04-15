@@ -1,13 +1,22 @@
 import pygame
 import pyglet as pg
 
-def __init__(window_width=1280, window_height=720, world_width=64, world_height=36):
+def __init__(
+        window_width=1280,
+        window_height=720,
+        world_width=64,
+        world_height=36,
+        circle_radius=10,
+        trail_length=500
+    ):
     # globals
-    global WINDOW_WIDTH, WINDOW_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT 
+    global WINDOW_WIDTH, WINDOW_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT, CIRCLE_RADIUS, TRAIL_LENGTH
     WINDOW_WIDTH = window_width
     WINDOW_HEIGHT = window_height
     WORLD_WIDTH = world_width
     WORLD_HEIGHT = world_height
+    CIRCLE_RADIUS = circle_radius
+    TRAIL_LENGTH = trail_length
 
     # initialize pyglet
     global window
@@ -18,6 +27,9 @@ def __init__(window_width=1280, window_height=720, world_width=64, world_height=
 
     global shapes
     shapes = []
+
+    global trail
+    trail = []
 
     @window.event
     def on_draw():
@@ -50,15 +62,34 @@ def end_frame():
     pass
 
 # draw circle at x, y in meters
-def draw(x_pos, y_pos):
+def draw(x_pos, y_pos, color=(255,0,0), radius=10):
     circle = pg.shapes.Circle(
         x=world_to_screen_x(x_pos),
         y=world_to_screen_y(y_pos),
-        radius=10,
-        color=(255,0,0),
+        radius=radius,
+        color=color,
         batch=batch
     )
     shapes.append(circle)
+
+def draw_trail(x_pos, y_pos):
+    circle = pg.shapes.Circle(
+        x=world_to_screen_x(x_pos),
+        y=world_to_screen_y(y_pos),
+        radius=CIRCLE_RADIUS,
+        color=(255,0,0),
+        batch=batch
+    )
+
+    while len(trail) < TRAIL_LENGTH:
+        trail.append(circle)
+
+    trail.pop(0)
+    trail.append(circle)
+
+    for i in range(TRAIL_LENGTH):
+        trail[i].radius = i / TRAIL_LENGTH * CIRCLE_RADIUS
+        shapes.append(trail[i])
 
 # draw x and y axes
 def draw_axes():

@@ -51,7 +51,8 @@ def update(dt):
     d.start_frame()
     d.draw_axes()
 
-    d.draw(x[0], y[0])
+    d.draw_trail(x[0], y[0])
+    # d.draw(x[0], y[0])
 
     d.end_frame()
 
