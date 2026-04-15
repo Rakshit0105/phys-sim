@@ -36,7 +36,7 @@ y_pos = []
 def update(dt):
     global t_curr, xvec 
     
-    if t_curr >= 20*60:
+    if t_curr >= 20:
         return
     
     t_list.append(t_curr)
@@ -44,9 +44,8 @@ def update(dt):
     
     d.start_frame()
     d.draw_axes()
-
-    d.draw_trail(0, xvec[0])
-    
+    d.draw_trail(0, xvec[0]) 
+    d.draw_trail(xvec[0], 0)
     d.end_frame()
 
     t, y_next = rk_single(f, t_curr, xvec, 0)
@@ -57,8 +56,8 @@ def update(dt):
 pg.clock.schedule_interval(update, 1 / fps)
 d.__run__()
 
-plt.plot(t_list, y_pos)
-plt.xlabel("time")
-plt.ylabel("y-pos")
-plt.grid()
-plt.savefig("./dampened_oscillator.png")
+# plt.plot(t_list, y_pos)
+# plt.xlabel("time")
+# plt.ylabel("y-pos")
+# plt.grid()
+# plt.savefig("./dampened_oscillator.png")
