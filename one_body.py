@@ -5,15 +5,15 @@ import draw as d
 import matplotlib.pyplot as plt
 
 # d^2/dt^2 (r) = GM/r^2
-x_0 = 30 
+x_0 = 0 
 y_0 = 60
-vx_0 = -0.5 
-vy_0 = -0.3
+vx_0 = -0.57735
+vy_0 = 0
 t_final = 100000
 G = 1 # 6.674e-11
 M = 20
 
-fps = 60*10
+fps = 60*200
 
 x = np.array([x_0, vx_0])
 y = np.array([y_0, vy_0])
