@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 
 # d^2/dt^2 (r) = GM/r^2
 x_0 = 1 
-y_0 = 1
-vx_0 = -0.1  
+y_0 = 10
+vx_0 = -1.2 
 vy_0 = 0 
-t_final = 10
+t_final = 100
 G = 1 # 6.674e-11
-M = 1
+M = 10
 
 fps = 60
 
@@ -20,8 +20,19 @@ y = np.array([y_0, vy_0])
 
 def f(t, x_old, y_old):
     x_next = np.zeros(2)
+    
+    # handles cases when x and y are 0, so its not undefined
+    if (x_old[0] == 0) and (y_old[0] == 0):
+        x_next[0] = x_old[1]
+        x_next[1] = 0.0
+
+        print(x_next)
+        return x_next 
+
     x_next[0] = x_old[1]
-    x_next[1] = G*M*x_old[0] / (x_old[0]**2 + y_old[0]**2)**1.5
+    x_next[1] = -G*M*x_old[0] / ((x_old[0]**2 + y_old[0]**2)**1.5)
+
+    print(x_old, x_next)
 
     return x_next
 
@@ -44,7 +55,7 @@ def update(dt):
     y_pos.append(y[0])
     t_list.append(t_curr)
 
-    print(f"t: {round(t_curr, 3)};    x: {round(x[0], 4)};    y: {round(y[0], 4)};    v_x: {round(x[1], 4)};    v_y: {round(y[1], 4)}")
+    # print(f"t: {round(t_curr, 3)};    x: {round(x[0], 4)};    y: {round(y[0], 4)};    v_x: {round(x[1], 4)};    v_y: {round(y[1], 4)}")
     
     t, x_next = rk_single(f, t_curr, x, y)
     t, y_next = rk_single(f, t_curr, y, x)
