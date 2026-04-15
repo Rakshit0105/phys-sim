@@ -5,15 +5,15 @@ import draw as d
 import matplotlib.pyplot as plt
 
 # d^2/dt^2 (r) = GM/r^2
-x_0 = 1 
-y_0 = 10
-vx_0 = -1.2 
-vy_0 = 0 
-t_final = 100
+x_0 = 30 
+y_0 = 60
+vx_0 = -0.5 
+vy_0 = -0.3
+t_final = 100000
 G = 1 # 6.674e-11
-M = 10
+M = 20
 
-fps = 60
+fps = 60*10
 
 x = np.array([x_0, vx_0])
 y = np.array([y_0, vy_0])
@@ -32,11 +32,11 @@ def f(t, x_old, y_old):
     x_next[0] = x_old[1]
     x_next[1] = -G*M*x_old[0] / ((x_old[0]**2 + y_old[0]**2)**1.5)
 
-    print(x_old, x_next)
+    # print(x_old, x_next)
 
     return x_next
 
-d.__init__(1280, 720)
+d.__init__(1280, 720, 64*10, 36*10)
 
 t_curr = 0
 x_pos = []
@@ -47,8 +47,13 @@ def update(dt):
     
     if t_curr >= t_final:
         return
+    
+    d.start_frame()
+    d.draw_axes()
 
     d.draw(x[0], y[0])
+
+    d.end_frame()
 
     # for plotting only
     x_pos.append(x[0])
