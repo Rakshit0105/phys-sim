@@ -1,6 +1,6 @@
 # Setup
 ```bash
-pip install numpy scipy pygame pyglet matplotlib
+pip install numpy pyglet matplotlib
 ```
 
 # Migration to Pyglet
@@ -14,6 +14,7 @@ pip install numpy scipy pygame pyglet matplotlib
 - [x] Springs
 - [x] Diff eq. support
 - [ ] Two-body problems
+  - [x] One fixed body
 - [ ] N-body problems
 - [ ] Particle simulation
 - [ ] Fluid simulation
