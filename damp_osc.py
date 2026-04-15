@@ -9,7 +9,7 @@ fps = 60
 ord = 2
 
 x_0 = 10
-v_0 = 10
+v_0 = -10
 
 b = 0.2
 m = 1
@@ -23,7 +23,7 @@ def f(t, xold):
     xnew[1] = -b/m * xold[1] -k/m * xold[0]
     return xnew
 
-t, y, iter = rk(f, 0, xvec, 20 * 60)
+t, y = rk(f, 0, xvec, 20 * 60)
 
 y = np.array(y)
 
@@ -38,6 +38,8 @@ def update(dt):
 
     d.draw(0, y[:, 0][i])
     i += 1
+
+    # print(y[:,1][i])
 
 pg.clock.schedule_interval(update, 1 / fps)
 d.__run__()
