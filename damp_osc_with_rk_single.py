@@ -36,7 +36,7 @@ y_pos = []
 def update(dt):
     global t_curr, xvec 
     
-    if t_curr >= 20:
+    if t_curr >= 20*60:
         return
     
     t_list.append(t_curr)
@@ -44,8 +44,9 @@ def update(dt):
     
     d.start_frame()
     d.draw_axes()
-    d.draw_trail(0, xvec[0]) 
-    d.draw_trail(xvec[0], 0)
+    
+    d.draw_trail(1, xvec[0]) 
+    # d.draw_trail(xvec[0], 0)
     d.end_frame()
 
     t, y_next = rk_single(f, t_curr, xvec, 0)

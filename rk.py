@@ -24,7 +24,7 @@ def rk(f, t_i, y_i, t_f, h=0.1):
     return t, y
 
 
-def rk_single(f, t_i, y_i, extra, h=0.1):
+def rk_single(f, t_i, y_i, extra, h=0.01):
     y = y_i
     t = t_i 
     step_size = h 
