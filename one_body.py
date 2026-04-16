@@ -3,6 +3,7 @@ from rk import *
 import pyglet as pg
 import draw as d
 import matplotlib.pyplot as plt
+from body import Body
 
 # d^2/dt^2 (r) = GM/r^2
 x_0 = 45 
@@ -35,12 +36,16 @@ def f(t, x_old, y_old):
 
     return x_next
 
-d.__init__(1280, 720, 64*10, 36*10, trail_length=2)
+d.__init__(1280, 720, 64*10, 36*10)
 
 t_curr = 0
 x_pos = []
 y_pos = [] 
 t_list = []
+
+body = Body(x_0=x_0, y_0=y_0)
+d.add_body(body)
+
 def update(dt):
     global t_curr, x, y
     
@@ -50,8 +55,11 @@ def update(dt):
     d.start_frame()
     d.draw_axes()
 
-    d.draw_trail(x[0], y[0])
-    # d.draw(x[0], y[0])
+    body.move(x[0], y[0])
+    d.draw_trail(body, 0, shift=1)
+    d.draw_body(body, 0)
+    # d.draw_trail(x[0], y[0])
+    d.draw(x[0], y[0])
 
     d.end_frame()
 
@@ -62,8 +70,8 @@ def update(dt):
 
     # print(f"t: {round(t_curr, 3)};    x: {round(x[0], 4)};    y: {round(y[0], 4)};    v_x: {round(x[1], 4)};    v_y: {round(y[1], 4)}")
     
-    t, x_next = rk_single(f, t_curr, x, y)
-    t, y_next = rk_single(f, t_curr, y, x)
+    t, x_next = rk_single(f, t_curr, x, y, 0.1)
+    t, y_next = rk_single(f, t_curr, y, x, 0.1)
     t_curr = t # proceed to next step
     
     x_next = np.array(x_next)
