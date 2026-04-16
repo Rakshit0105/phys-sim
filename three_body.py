@@ -6,16 +6,27 @@ import matplotlib.pyplot as plt
 from body import Body
 
  # initial conditions for body 1, 2, 3 respectively
-x_0 = np.array([100, 0, 300], dtype=float)
-y_0 = np.array([-100, 0, 300], dtype=float)
-vx_0 = np.array([10, 2, 0], dtype=float)
-vy_0 = np.array([10, 2, -30], dtype=float)
-m = np.array([1000, 20000, 30000], dtype=float)
-t_final = 1000
-
+x_0 = np.array([100, 0, -100], dtype=float)
+y_0 = np.array([0, 0, 0], dtype=float)
+vx_0 = np.array([0, 0, 0], dtype=float)
+vy_0 = np.array([10, 0, -50], dtype=float)
+m = np.array([20, 20, 20], dtype=float)
 G = 1 # 6.674e-11
 
-fps = 60
+# G = 1.0
+# m = np.array([10000.0, 10000.0, 10000.0], dtype=float)
+# a = 300.0
+# R = a / np.sqrt(3.0)         # distance from center
+# v = np.sqrt(G * m[0] / a)    # speed
+#
+# x_0  = np.array([ R,   -R/2,   -R/2 ], dtype=float)
+# y_0  = np.array([ 0.0,  a/2,   -a/2  ], dtype=float)
+#
+# vx_0 = np.array([ 0.0, -np.sqrt(3)/2 * v,  np.sqrt(3)/2 * v ], dtype=float)
+# vy_0 = np.array([ v,   -0.5 * v,          -0.5 * v          ], dtype=float)
+
+fps = 60*5
+t_final = 1000
 
 def f(t, pos, mass):
     #                       x, vx   y, vy 
@@ -96,7 +107,7 @@ def f(t, pos, mass):
 
     return pos_next
 
-d.__init__(1280, 720, 64*10, 36*10, trail_length=2)
+d.__init__(1280, 720, 64*10, 36*10, trail_length=1000)
 
 t_curr = 0 
 # array with first row with x pos anc vel for the 3 bodies, and second row with y pos and vel
@@ -105,9 +116,9 @@ pos = np.array([ [[x_0[0], vx_0[0]], [y_0[0], vy_0[0]]], \
                  [[x_0[2], vx_0[2]], [y_0[2], vy_0[2]]] ], dtype=float)
 
 bodies = np.array([ \
-    Body(x_0=x_0[0], y_0=y_0[0]), \
-    Body(x_0=x_0[1], y_0=y_0[1]), \
-    Body(x_0=x_0[2], y_0=y_0[2]), \
+    Body(x_0=x_0[0], y_0=y_0[0], trail_length=1000), \
+    Body(x_0=x_0[1], y_0=y_0[1], trail_length=1000), \
+    Body(x_0=x_0[2], y_0=y_0[2], trail_length=1000), \
 ])
 
 for body in bodies:
@@ -131,6 +142,7 @@ def update(dt):
 
         bodies[i].move(pos_next[0][0][0], pos_next[0][1][0])
         d.draw_body(bodies[i], i)
+        d.draw_trail(bodies[i], i, shift=1)
 
         if i == 2:
             t_curr = t
