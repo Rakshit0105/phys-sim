@@ -8,9 +8,9 @@ from body import Body
  # initial conditions for body 1, 2, 3 respectively
 x_0 = np.array([100, 0, 300], dtype=float)
 y_0 = np.array([-100, 0, 300], dtype=float)
-vx_0 = np.array([10, 2, 300], dtype=float)
-vy_0 = np.array([10, 2, 30], dtype=float)
-m = np.array([10, 200, 300], dtype=float)
+vx_0 = np.array([10, 2, 0], dtype=float)
+vy_0 = np.array([10, 2, -30], dtype=float)
+m = np.array([1000, 20000, 30000], dtype=float)
 t_final = 1000
 
 G = 1 # 6.674e-11
@@ -39,10 +39,13 @@ def f(t, pos, mass):
     x12_old[0] = x2_old[0] - x1_old[0]
     y12_old[0] = y2_old[0] - y1_old[0]
 
-    # x12_old[1], y12_old[1] = np.dot( \
-    #     np.array([x1_old[1], y1_old[1]]), \
-    #     np.array([x12_old[0], y12_old[0]]) \
-    # ) * np.array([x12_old[0], y12_old[0]])
+    x12_norm = np.array([x12_old[0], y12_old[0]])
+    x12_norm = x12_norm / np.linalg.norm(x12_norm)
+
+    x12_old[1], y12_old[1] = np.dot( \
+        np.array([x1_old[1], y1_old[1]]), \
+        x12_norm \
+    ) * x12_norm
 
     x13_old = np.zeros(2)
     y13_old = np.zeros(2)
@@ -50,17 +53,20 @@ def f(t, pos, mass):
     # reference frame with respect to b1
     x13_old[0] = x3_old[0] - x1_old[0]
     y13_old[0] = y3_old[0] - y1_old[0]
-
-    # x13_old[1], y13_old[1] = np.dot( \
-    #     np.array([x1_old[1], y1_old[1]]), \
-    #     np.array([x13_old[0], y13_old[0]]) \
-    # ) * np.array([x13_old[0], y13_old[0]])
     
-    x12_old[1] = x2_old[1] - x1_old[1]
-    y12_old[1] = y2_old[1] - y1_old[1]
+    x13_norm = np.array([x13_old[0], y13_old[0]])
+    x13_norm = x13_norm / np.linalg.norm(x13_norm)
 
-    x13_old[1] = x3_old[1] - x1_old[1]
-    y13_old[1] = y3_old[1] - y1_old[1]
+    x13_old[1], y13_old[1] = np.dot( \
+        np.array([x1_old[1], y1_old[1]]), \
+        x13_norm \
+    ) * x13_norm
+
+    # x12_old[1] = x2_old[1] - x1_old[1]
+    # y12_old[1] = y2_old[1] - y1_old[1]
+    #
+    # x13_old[1] = x3_old[1] - x1_old[1]
+    # y13_old[1] = y3_old[1] - y1_old[1]
 
     # handles cases when x and y are 0, so its not undefined
     x_next = np.zeros(2)
@@ -69,8 +75,8 @@ def f(t, pos, mass):
         x_next[1] = 0.0
     else: 
         x_next[0] = x12_old[1] + x13_old[1]
-        x_next[1] = -G*mass[1]*x12_old[0] / ((x12_old[0]**2 + y12_old[0]**2)**1.5) \
-                    -G*mass[2]*x13_old[0] / ((x13_old[0]**2 + y13_old[0]**2)**1.5)
+        x_next[1] = G*mass[1]*x12_old[0] / ((x12_old[0]**2 + y12_old[0]**2)**1.5) \
+                    + G*mass[2]*x13_old[0] / ((x13_old[0]**2 + y13_old[0]**2)**1.5)
     
     # x_next[0] += x1_old[0]
 
@@ -80,8 +86,8 @@ def f(t, pos, mass):
         y_next[1] = 0.0
     else: 
         y_next[0] = y12_old[1] + y13_old[1]
-        y_next[1] = -G*mass[1]*y12_old[0] / ((y12_old[0]**2 + x12_old[0]**2)**1.5) \
-                    -G*mass[2]*y13_old[0] / ((y13_old[0]**2 + x13_old[0]**2)**1.5)
+        y_next[1] = G*mass[1]*y12_old[0] / ((y12_old[0]**2 + x12_old[0]**2)**1.5) \
+                    + G*mass[2]*y13_old[0] / ((y13_old[0]**2 + x13_old[0]**2)**1.5)
 
     # y_next[0] += y1_old[0]
 
