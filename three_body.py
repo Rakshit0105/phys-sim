@@ -5,12 +5,13 @@ import draw as d
 import matplotlib.pyplot as plt
 from body import Body
 
- # initial conditions for body 1, 2, 3 respectively
-x_0 = np.array([100, 0, -100], dtype=float)
-y_0 = np.array([0, 0, 0], dtype=float)
-vx_0 = np.array([0, 0, 0], dtype=float)
-vy_0 = np.array([10, 0, -50], dtype=float)
-m = np.array([20, 20, 20], dtype=float)
+# initial conditions for body 1, 2, 3 respectively
+n = 10
+x_0 = np.array([40*3, 0, 0], dtype=float)
+y_0 = np.array([0, 30*3, 0], dtype=float)
+vx_0 = np.array([0, 0, 0.1], dtype=float)
+vy_0 = np.array([0, 0, 0], dtype=float)
+m = np.array([3*n, 4*n, 5*n], dtype=float)
 G = 1 # 6.674e-11
 
 # G = 1.0
@@ -25,16 +26,14 @@ G = 1 # 6.674e-11
 # vx_0 = np.array([ 0.0, -np.sqrt(3)/2 * v,  np.sqrt(3)/2 * v ], dtype=float)
 # vy_0 = np.array([ v,   -0.5 * v,          -0.5 * v          ], dtype=float)
 
-fps = 60*5
+fps = 60*20
 t_final = 1000
 
 def f(t, pos, mass):
     #                       x, vx   y, vy 
-    """
-    pos_next = np.array([ [[0, 0], [0, 0]], \ # B1
-                          [[0, 0], [0, 0]], \ # B2
-                          [[0, 0], [0, 0]] ]) # B3
-    """
+    # pos_next = np.array([ [[0, 0], [0, 0]], \ # B1
+    #                       [[0, 0], [0, 0]], \ # B2
+    #                       [[0, 0], [0, 0]] ]) # B3    
 
     pos_next = pos.copy().astype(float)
 
@@ -81,23 +80,29 @@ def f(t, pos, mass):
 
     # handles cases when x and y are 0, so its not undefined
     x_next = np.zeros(2)
-    if ((x12_old[0] == 0) and (y12_old[0] == 0)) or ((x13_old[0] == 0) and (y13_old[0] == 0)):
+    if ((x12_old[0] <= 1e-2) and (y12_old[0] <= 1e-2)):
         x_next[0] = x12_old[1]
+        x_next[1] = 0.0
+    elif ((x13_old[0] <= 1e-2) and (y13_old[0] <= 1e-2)):
+        x_next[0] = x13_old[1]
         x_next[1] = 0.0
     else: 
         x_next[0] = x12_old[1] + x13_old[1]
-        x_next[1] = G*mass[1]*x12_old[0] / ((x12_old[0]**2 + y12_old[0]**2)**1.5) \
+        x_next[1] = -G*mass[1]*x12_old[0] / ((x12_old[0]**2 + y12_old[0]**2)**1.5) \
                     + G*mass[2]*x13_old[0] / ((x13_old[0]**2 + y13_old[0]**2)**1.5)
     
     # x_next[0] += x1_old[0]
 
     y_next = np.zeros(2)
-    if ((x12_old[0] == 0) and (y12_old[0] == 0)) or ((x13_old[0] == 0) and (y13_old[0] == 0)):
+    if ((x12_old[0] <= 1e-2) and (y12_old[0] <= 1e-2)):
         y_next[0] = y12_old[1]
+        y_next[1] = 0.0
+    elif ((x13_old[0] <= 1e-2) and (y13_old[0] <= 1e-2)):
+        y_next[0] = y13_old[1]
         y_next[1] = 0.0
     else: 
         y_next[0] = y12_old[1] + y13_old[1]
-        y_next[1] = G*mass[1]*y12_old[0] / ((y12_old[0]**2 + x12_old[0]**2)**1.5) \
+        y_next[1] = -G*mass[1]*y12_old[0] / ((y12_old[0]**2 + x12_old[0]**2)**1.5) \
                     + G*mass[2]*y13_old[0] / ((y13_old[0]**2 + x13_old[0]**2)**1.5)
 
     # y_next[0] += y1_old[0]
@@ -107,7 +112,7 @@ def f(t, pos, mass):
 
     return pos_next
 
-d.__init__(1280, 720, 64*10, 36*10, trail_length=1000)
+d.__init__(1280, 720, 64*10, 36*10, trail_length=2)
 
 t_curr = 0 
 # array with first row with x pos anc vel for the 3 bodies, and second row with y pos and vel
@@ -116,9 +121,9 @@ pos = np.array([ [[x_0[0], vx_0[0]], [y_0[0], vy_0[0]]], \
                  [[x_0[2], vx_0[2]], [y_0[2], vy_0[2]]] ], dtype=float)
 
 bodies = np.array([ \
-    Body(x_0=x_0[0], y_0=y_0[0], trail_length=1000), \
-    Body(x_0=x_0[1], y_0=y_0[1], trail_length=1000), \
-    Body(x_0=x_0[2], y_0=y_0[2], trail_length=1000), \
+    Body(x_0=x_0[0], y_0=y_0[0], trail_length=2), \
+    Body(x_0=x_0[1], y_0=y_0[1], trail_length=2), \
+    Body(x_0=x_0[2], y_0=y_0[2], trail_length=2), \
 ])
 
 for body in bodies:
