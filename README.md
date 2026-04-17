@@ -15,7 +15,12 @@ pip install numpy pyglet matplotlib
 - [x] Diff eq. support
 - [x] Two-body problems
   - [x] One fixed body
-- [x] N-body problems
+- [ ] N-body problems
+  - [x] basic N-body problems
+  - [ ] add functions to support moving center of mass
+  - [ ] add functions to model changing mass overtime
+  - [ ] energy support (to make it accurate to real life)
+  - [ ] Handle situations when bodies collied and distance b/w them is 0, so d^2(r)/dt^2 isn't NaN
 - [ ] Particle simulation
 - [ ] Fluid simulation
 
