@@ -19,7 +19,7 @@ fps = 60*200
 x = np.array([x_0, vx_0])
 y = np.array([y_0, vy_0])
 
-def f(t, x_old, y_old):
+def f(t, x_old, y_old, null):
     x_next = np.zeros(2)
     
     # handles cases when x and y are 0, so its not undefined
