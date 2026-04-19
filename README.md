@@ -20,7 +20,7 @@ pip install numpy pyglet matplotlib
   - [ ] add functions to support moving center of mass
   - [ ] add functions to model changing mass overtime
   - [ ] energy support (to make it accurate to real life)
-  - [ ] Handle situations when bodies collied and distance b/w them is 0, so d^2(r)/dt^2 isn't NaN
+  - [x] Handle situations when bodies collied and distance b/w them is 0, so d^2(r)/dt^2 isn't NaN
 - [ ] Particle simulation
 - [ ] Fluid simulation
 
