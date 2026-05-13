@@ -1,6 +1,5 @@
-import pygame
 import pyglet as pg
-from n_body.body import Body
+import platform
 
 def __init__(
     window_width=1280,
@@ -9,11 +8,14 @@ def __init__(
     world_height=36,
 ):
     # globals
-    global WINDOW_WIDTH, WINDOW_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT, CIRCLE_RADIUS, TRAIL_LENGTH
+    global WINDOW_WIDTH, WINDOW_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT, IS_MAC_OS
     WINDOW_WIDTH = window_width
     WINDOW_HEIGHT = window_height
     WORLD_WIDTH = world_width
     WORLD_HEIGHT = world_height
+
+    # detect if macos
+    IS_MAC_OS = (platform.system().lower() == "darwin")
 
     # initialize pyglet
     global window
@@ -65,11 +67,17 @@ def set_world_height(height = 36):
 
 # convert from x in meters to x on screen
 def world_to_screen_x(x_pos):
-    return WINDOW_WIDTH / 2 + x_pos * WINDOW_WIDTH / WORLD_WIDTH
+    if IS_MAC_OS:
+        return WINDOW_WIDTH + x_pos * WINDOW_WIDTH / WORLD_WIDTH
+    else:
+        return WINDOW_WIDTH / 2 + x_pos * WINDOW_WIDTH / WORLD_WIDTH
 
 # convert from y in meters to y on screen
 def world_to_screen_y(y_pos):
-    return WINDOW_HEIGHT / 2 + y_pos * WINDOW_HEIGHT / WORLD_HEIGHT
+    if IS_MAC_OS:
+        return WINDOW_HEIGHT + y_pos * WINDOW_HEIGHT / WORLD_HEIGHT
+    else:
+        return WINDOW_HEIGHT / 2 + y_pos * WINDOW_HEIGHT / WORLD_HEIGHT
 
 def start_frame():
     shapes.clear()
