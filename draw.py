@@ -1,6 +1,6 @@
 import pygame
 import pyglet as pg
-from body import Body
+from n_body.body import Body
 
 def __init__(
     window_width=1280,
@@ -78,7 +78,7 @@ def end_frame():
     pass
 
 # draw circle at x, y in meters
-def draw(x_pos, y_pos, color=(255,0,0), radius=10):
+def draw(x_pos, y_pos, color=(255,0,0), radius=10.0):
     circle = pg.shapes.Circle(
         x=world_to_screen_x(x_pos),
         y=world_to_screen_y(y_pos),
