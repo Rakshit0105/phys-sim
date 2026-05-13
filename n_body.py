@@ -155,7 +155,7 @@ def fg(t, b1_old, bn_vals, mass):
     return b1_next
 
 ### def main():
-d.__init__(1280, 720, 64*w, 36*w, trail_length=2)
+d.__init__(1280, 720, 64*w, 36*w)
 
 initial_cm = initial.copy()
 pos_next = np.zeros((bodies, 2, 3))
@@ -163,9 +163,8 @@ t_curr = 0
 body_objects = []
 
 for i in range(bodies):
-    body = Body(x_0=initial[i+1, 0][0], y_0=initial[i+1, 0][1], trail_length=2)
+    body = Body(position=initial[i+1, 0], velocity=initial[i+1, 1], mass = initial[i+1, 2][0])
     body_objects = np.append(body_objects, body)
-    d.add_body(body)
 
 def update(dt):
     global initial_cm, pos_next, t_curr
@@ -210,9 +209,7 @@ def update(dt):
 
         # draw objects
         # print(pos_next[i, 0, 0], pos_next[i, 0, 1]) # DEBUG
-        body_objects[i].move(pos_next[i, 0, 0], pos_next[i, 0, 1])
-        d.draw_body(body_objects[i], i)
-        d.draw_trail(body_objects[i], i, shift=1)
+        d.draw(x_pos=pos_next[i][0], y_pos=pos_next[i][1])
 
     d.end_frame()
 
