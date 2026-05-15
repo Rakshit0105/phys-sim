@@ -2,6 +2,7 @@
 ```bash
 pip install numpy pyglet matplotlib
 ```
+matplotlib is not necessary if not plotting
 
 # Migration to Pyglet
 [Pyglet Docs](https://pyglet.readthedocs.io/en/latest/index.html)

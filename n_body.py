@@ -4,7 +4,7 @@ import pyglet as pg
 import draw as d 
 from body import Body
 
-bodies = 11 # number of bodies
+bodies = 3 # number of bodies
 t_final = 10000
 # initial conditions: [ [x, y, z], [v_x, v_y, v_z], [m, 0, 0] ] per row (for 0-th row, its [ [x, y, z], [vx, vy, vz], [ax, ay, az] ]) 
 
@@ -66,48 +66,48 @@ t_final = 10000
 ###
 
 ### 3-body  test with 1 collision and 1 in orbit
-# w = 10
-# initial = np.array([
-#     [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
-#     [ [97, 29, 0], [0.35, -0.8,  0], [1000, 0, 0] ], # B1
-#     [ [192, -84, 0], [-0.3, 0.2, 0], [1000, 0, 0] ], # B2
-#     [ [0.0, 0.0, 0.0], [-0.3, -1.8, 0], [100, 0, 0] ],               # B3
-# ])
+w = 10
+initial = np.array([
+    [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
+    [ [97, 29, 0], [0.35, -0.8,  0], [1000, 0, 0] ], # B1
+    [ [192, -84, 0], [-0.3, 0.2, 0], [1000, 0, 0] ], # B2
+    [ [0.0, 0.0, 0.0], [-0.3, -1.8, 0], [100, 0, 0] ],               # B3
+])
 ###
 
 ### Stable-ish hierarchical system with Trojans and moons.
-w = 25
-initial = np.array([
-    [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ],  # CM
-
-    # Central star, slightly offset so total position/momentum are near centered
-    [ [0.263386, -0.711634, 0], [0.006759, -0.042767, 0], [20000, 0, 0] ],  # B1 Star
-
-    # Inner planet + moon
-    [ [160.000000, 0.000000, 0], [0.000000, 11.180340, 0], [30, 0, 0] ],    # B2 Inner Planet
-    [ [172.000000, 0.000000, 0], [0.000000, 12.761479, 0], [1, 0, 0] ],     # B3 Inner Moon
-
-    # Gas giant + two moons
-    [ [340.000000, 0.000000, 0], [0.000000, 7.669650, 0], [120, 0, 0] ],    # B4 Gas Giant
-    [ [368.000000, 0.000000, 0], [0.000000, 9.739847, 0], [2, 0, 0] ],      # B5 Inner Giant Moon
-    [ [385.000000, 0.000000, 0], [0.000000, 9.302643, 0], [0.3, 0, 0] ],    # B6 Outer Giant Moon
-
-    # Gas giant Trojans near L4/L5
-    [ [170.000000, 294.448637, 0], [-6.642112, 3.834825, 0], [0.5, 0, 0] ], # B7 L4 Trojan
-    [ [170.000000, -294.448637, 0], [6.642112, 3.834825, 0], [0.5, 0, 0] ], # B8 L5 Trojan
-
-    # Outer planet + moon, placed at an angle for visual variety
-    [ [-610.800204, 222.313093, 0], [-1.897186, -5.212477, 0], [80, 0, 0] ], # B9 Outer Planet
-    [ [-631.473441, 229.837536, 0], [-2.549393, -7.004400, 0], [1.5, 0, 0] ],# B10 Outer Moon
-
-    # Distant ice body
-    [ [-450.000000, -779.422863, 0], [4.082483, -2.357023, 0], [5, 0, 0] ],  # B11 Ice Body
-])
+# w = 25
+# initial = np.array([
+#     [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ],  # CM
+#
+#     # Central star, slightly offset so total position/momentum are near centered
+#     [ [0.263386, -0.711634, 0], [0.006759, -0.042767, 0], [20000, 0, 0] ],  # B1 Star
+#
+#     # Inner planet + moon
+#     [ [160.000000, 0.000000, 0], [0.000000, 11.180340, 0], [30, 0, 0] ],    # B2 Inner Planet
+#     [ [172.000000, 0.000000, 0], [0.000000, 12.761479, 0], [1, 0, 0] ],     # B3 Inner Moon
+#
+#     # Gas giant + two moons
+#     [ [340.000000, 0.000000, 0], [0.000000, 7.669650, 0], [120, 0, 0] ],    # B4 Gas Giant
+#     [ [368.000000, 0.000000, 0], [0.000000, 9.739847, 0], [2, 0, 0] ],      # B5 Inner Giant Moon
+#     [ [385.000000, 0.000000, 0], [0.000000, 9.302643, 0], [0.3, 0, 0] ],    # B6 Outer Giant Moon
+#
+#     # Gas giant Trojans near L4/L5
+#     [ [170.000000, 294.448637, 0], [-6.642112, 3.834825, 0], [0.5, 0, 0] ], # B7 L4 Trojan
+#     [ [170.000000, -294.448637, 0], [6.642112, 3.834825, 0], [0.5, 0, 0] ], # B8 L5 Trojan
+#
+#     # Outer planet + moon, placed at an angle for visual variety
+#     [ [-610.800204, 222.313093, 0], [-1.897186, -5.212477, 0], [80, 0, 0] ], # B9 Outer Planet
+#     [ [-631.473441, 229.837536, 0], [-2.549393, -7.004400, 0], [1.5, 0, 0] ],# B10 Outer Moon
+#
+#     # Distant ice body
+#     [ [-450.000000, -779.422863, 0], [4.082483, -2.357023, 0], [5, 0, 0] ],  # B11 Ice Body
+# ])
 ###
 
 
 G = 1 # 6.674e-11
-fps = 60*2000 # tick rate
+fps = 60*20 # tick rate
 
 def to_CM_ref(r_abs, vel_abs, mass, CM_only=False):
     bodies = len(r_abs) # number of true bodies + 1 
@@ -121,7 +121,7 @@ def to_CM_ref(r_abs, vel_abs, mass, CM_only=False):
         return r_cm 
 
     # get positions WRT CM
-    r = np.array([]) 
+    # r = np.array([]) 
     r = np.zeros_like(r_abs) 
     r[0] = r_abs[0] # preserves position of CM across function calls
     for i in range(1, bodies):
@@ -185,19 +185,36 @@ def fg(t, b1_old, bn_vals, mass):
 
     return b1_next
 
-### def main():
+###  WARN: EXPERIMENTAL - switch to energy and momentum conservation baseed calc
+# def energy_momentum(t, body_objects_next, body_objects_prev, energy=None):
+#     # minimize potential energy (gradient descent)
+#     # compensate for decrease in energy by increasing kinetic energy to keep total energy constatnt 
+#     # momentum must be conserved at all times 
+#     tolerance = 1e-6
+#
+#     # compute potential energy
+#     potential_i = 0 
+#     kinetic_i = 0 
+#     for i in range(len(body_objects_prev)):
+#         counter = 0 
+#         for j in 
+#     return 
+###
+
 d.__init__(1280, 720, 64*w, 36*w)
 
 initial_cm = initial.copy()
 pos_next = np.zeros((bodies, 2, 3))
 t_curr = 0
 body_objects = []
+body_objects_old = []
 
 for i in range(bodies):
     color = np.random.randint(0, 256, 3)
     color = tuple(color)
-    body = Body(position=initial[i+1, 0], velocity=initial[i+1, 1], mass = initial[i+1, 2][0], color = color)
+    body = Body(position=initial[i+1, 0], velocity=initial[i+1, 1], mass = initial[i+1, 2][0], color = color, radius=5.0)
     body_objects = np.append(body_objects, body)
+    body_objects_old = np.append(body_objects_old, body)
 
 def update(dt):
     global initial_cm, pos_next, t_curr
@@ -206,7 +223,7 @@ def update(dt):
         return
 
     d.start_frame()
-    d.draw_axes()
+   # d.draw_axes()
 
     # switch to CM reference (update after movement)
     r_abs = initial[:,0]
@@ -242,7 +259,7 @@ def update(dt):
 
         # draw objects
         # print(pos_next[i, 0, 0], pos_next[i, 0, 1]) # DEBUG
-        d.draw(x_pos=pos_next[i, 0, 0], y_pos=pos_next[i, 0, 1], color=body_objects[i].color)
+        d.draw(x_pos=pos_next[i, 0, 0], y_pos=pos_next[i, 0, 1], color=body_objects[i].color, radius=body_objects[i].radius)
 
     d.end_frame()
 
