@@ -80,6 +80,7 @@ def potential_energy(body_objects):
 
     return potential
 
+# returns kinetric energy in CM ref frame 
 def kinetic_energy(body_objects):
     # body is (assumed to be) in CM ref frame 
     kinetic = 0
@@ -88,4 +89,32 @@ def kinetic_energy(body_objects):
 
     return kinetic 
 
+# returns current momentum in CM ref frame 
+def momentum(body_objects):
+    # body is (assumed to be) in CM ref frame 
+    p = np.zeros(3) # [px, py, pz]
+    for body in body_objects:
+        p += body_objects.velocity * body_objects.mass
 
+    return p 
+
+# returns negative gradient vector of a body at body_index in body_objects at current position in CM ref frame 
+def gradient_neg(body_objects, body_index):
+    grad_vec = np.zeros(3) # [dx, dy, dz]
+
+    for i in range(len(body_objects)):
+        if (i != body_index):
+            delta_r = body_objects[i].position - body_objects[body_index].position
+            delta_r_mag = vec_mag(delta_r)
+
+            # collision detection
+            if (delta_r_mag < (body_objects[i].radius + body_objects[body_index].radius)):
+                continue
+
+            grad_vec += -G*body_objects[i].mass*body_objects[body_index].mass*delta_r / (delta_r_mag)**3
+
+    return grad_vec
+
+# calculates next position based on 
+def calculate_position(body_objects, ENERGY):
+    
