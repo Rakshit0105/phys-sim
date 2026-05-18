@@ -67,7 +67,7 @@ def vec_mag(vec):
     return np.sqrt(sum)
 
 # returns potential energy of bodies in CM ref frame 
-def potential_energy(body_objects):
+def total_potential_energy(body_objects):
     # body is (assumed to be) in CM ref frame 
     potential = 0
     for i in range(len(body_objects)):
@@ -100,7 +100,7 @@ def potential_energy_single(body_objects, body_index):
     return potential
 
 # returns kinetric energy in CM ref frame 
-def kinetic_energy(body_objects):
+def total_kinetic_energy(body_objects):
     # body is (assumed to be) in CM ref frame 
     kinetic = 0
     for body in body_objects:
@@ -112,6 +112,14 @@ def kinetic_energy(body_objects):
 def kinetic_energy_single(body_objects, body_index):
     i = body_index
     return 0.5 * body_objects[i].mass * (vec_mag(body_objects[i].velocity))**2
+
+# total momentum in CM ref frame 
+def total_momentum(body_objects):
+    momentum = np.zeros(3) # [px, py, pz]
+    for body in body_objects:
+        momentum += body.mass * body.position
+
+    return momentum
 
 # gravity diff eq in CM reference
 def fg(t, body_objects, body, body_index):
@@ -134,7 +142,7 @@ def fg(t, body_objects, body, body_index):
 
     return body_new
 
-def rk_single(f, t_i, body_objects, body_index, h=0.005):
+def rk_single(f, t, body_objects, body_index, h=0.005):
     body = body_objects[body_index]
 
     # k_1 ... k_4 are body objects 
@@ -152,7 +160,7 @@ def rk_single(f, t_i, body_objects, body_index, h=0.005):
 
     k_4 = f(t+h, body_objects, body, body_index)
 
-    t_next = t + h 
+    t_next = t + h
     body_next = body_objects[body_index]
     body_next.position = body_objects[body_index].position + h / 6 * (k_1.position + 2*k_2.position + 2*k_3.position + k_4.position)
     body_next.velocity = body_objects[body_index].velocity + h / 6 * (k_1.velocity + 2*k_2.velocity + 2*k_3.velocity + k_4.velocity)
@@ -160,13 +168,54 @@ def rk_single(f, t_i, body_objects, body_index, h=0.005):
     return t_next, body_next
 
 # calculates next position based on 
-def calculate_position(body_objects, body_index, ENERGY):
+def calculate_position(body_objects, t_i, ENERGY, MOMENTUM):
     # U_old >= U_new
     # U_old - U_new = K_new - K_old 
-    # sqrt(2/m * )
-    return body_objects_next
+    # sqrt(2/m * U_old - U_new) = v_new
+    body_objects_next = []
+    t_next = -1
+    p_i = MOMENTUM
+    for body_index in range(len(body_objects)):
+        t_next, body_next = rk_single(fg, t_i, body_objects, body_index)
+        body_objects_next = np.append(body_objects_next, body_next)
 
-### NOTE: New plan for calculating:
-#   First, run RK to get the force changes
-#   Then, remove any leftover momentum
-#   Lastly, rescale velocities to conserve energy
+    p_f = total_momentum(body_objects_next)
+    p_ratio = vec_mag(p_i) / vec_mag(p_f)
+
+    # rescale all vectors with the momentum ratio for conservation of momentum
+    for body in body_objects_next:
+        body.velocity *= p_ratio
+
+    e_i = ENERGY
+    e_f = total_kinetic_energy(body_objects_next) + total_potential_energy(body_objects_next)
+    # DEBUG: 
+    print(f"p_i: {p_i};    p_curr: {p_f}")
+    print(f"e_i: {e_i};    e_curr: {e_f}")
+
+    return t_next, body_objects_next, ENERGY, MOMENTUM
+
+# initialize bodies 
+t_curr = 0
+body_objects = []
+
+CM_object = Body(position=initial[0,0], velocity=initial[0,1])
+for i in range(bodies):
+    color = np.random.randint(0, 256, 3)
+    color = tuple(color)
+    body = Body(position=initial[i+1, 0], velocity=initial[i+1, 1], mass=initial[i+1, 2][0], color=color, radius=5.0)
+    body_objects = np.append(body_objects, body)
+
+ENERGY = total_kinetic_energy(body_objects) + total_potential_energy(body_objects)
+MOMENTUM = total_momentum(body_objects)
+
+body_objects, CM_object = to_CM_ref(body_objects, CM_object)
+
+def update(dt):
+    global MOMENTUM, ENERGY, body_objects, t_curr
+
+    if (t_curr > t_final):
+        return
+
+    d.start_frame()
+
+    
