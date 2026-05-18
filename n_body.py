@@ -3,8 +3,9 @@ from rk import *
 import pyglet as pg 
 import draw as d 
 from body import Body
+from energy_n_body import total_potential_energy, total_kinetic_energy, total_momentum
 
-bodies = 3 # number of bodies
+bodies = 2 # number of bodies
 t_final = 10000
 # initial conditions: [ [x, y, z], [v_x, v_y, v_z], [m, 0, 0] ] per row (for 0-th row, its [ [x, y, z], [vx, vy, vz], [ax, ay, az] ]) 
 
@@ -21,13 +22,13 @@ t_final = 10000
 
 ###
 # Hierarchical Orbit (Sun, Earth, Moon equivalent)
-w = 15
-initial = np.array([
-    [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
-    [ [0, 0, 0], [0, -0.0585, 0], [10000, 0, 0] ],   # Star (massive, slow)
-    [ [300, 0, 0], [0, 5.7735, 0], [100, 0, 0] ],    # Planet (medium mass/distance)
-    [ [320, 0, 0], [0, 8.0095, 0], [1, 0, 0] ],       # Moon (tiny mass, tightly orbiting planet)
-])
+# w = 15
+# initial = np.array([
+#     [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
+#     [ [0, 0, 0], [0, -0.0585, 0], [10000, 0, 0] ],   # Star (massive, slow)
+#     [ [300, 0, 0], [0, 5.7735, 0], [100, 0, 0] ],    # Planet (medium mass/distance)
+#     [ [320, 0, 0], [0, 8.0095, 0], [1, 0, 0] ],       # Moon (tiny mass, tightly orbiting planet)
+# ])
 ###
 
 ###
@@ -43,13 +44,13 @@ initial = np.array([
 
 ###
 # 2-body test (based on Lagrange Equilateral Triangle)
-# w = 10
-# initial = np.array([
-#     [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
-#     [ [-2.97, 0, 0], [0, -0.057, 0], [10000, 0, 0] ],
-#     [ [297.03, 0, 0], [0, 5.744, 0], [100, 0, 0] ],
-# #    [ [147.03, 259.81, 0], [-5.025, 2.844, 0], [1, 0, 0] ],
-# ])
+w = 10
+initial = np.array([
+    [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
+    [ [-2.97, 0, 0], [0, -0.057, 0], [10000, 0, 0] ],
+    [ [297.03, 0, 0], [0, 5.744, 0], [100, 0, 0] ],
+#    [ [147.03, 259.81, 0], [-5.025, 2.844, 0], [1, 0, 0] ],
+])
 ###
 
 ###
@@ -199,9 +200,10 @@ def fg(t, b1_old, bn_vals, mass):
 #         counter = 0 
 #         for j in 
 #     return 
-###
-
-d.__init__(1280, 720, 64*w, 36*w)
+# ###
+#
+# d.__init__(1280, 720, 64*w, 36*w)
+d.__init__(720, 720, 36*w, 36*w)
 
 initial_cm = initial.copy()
 pos_next = np.zeros((bodies, 2, 3))
@@ -212,12 +214,22 @@ body_objects_old = []
 for i in range(bodies):
     color = np.random.randint(0, 256, 3)
     color = tuple(color)
-    body = Body(position=initial[i+1, 0], velocity=initial[i+1, 1], mass = initial[i+1, 2][0], color = color, radius=5.0)
+    body = Body(
+        position=initial[i+1, 0],
+        velocity=initial[i+1, 1],
+        mass = initial[i+1, 2][0],
+        color = color,
+        radius=max(2, initial[i+1, 2][0] ** 0.33333333333 * 5),
+    )
+    # print(type(body.position))
     body_objects = np.append(body_objects, body)
     body_objects_old = np.append(body_objects_old, body)
 
+p_i = total_momentum(body_objects)
+e_i = total_kinetic_energy(body_objects) + total_potential_energy(body_objects)
+
 def update(dt):
-    global initial_cm, pos_next, t_curr
+    global initial_cm, pos_next, t_curr, body_objects, p_i, e_i
 
     if (t_curr > t_final):
         return
@@ -256,12 +268,20 @@ def update(dt):
         # call rk to evaluate next pos for b1 (outside j-loop)
         t, b1_next = rk_single(fg, t_curr, b1_old, bn_vals, bn_mass)
         pos_next[i] = b1_next #1st column contains positions, and 2nd contains velocities
-
+        
+        body_objects[i].velocity = b1_next[1]
         # draw objects
         # print(pos_next[i, 0, 0], pos_next[i, 0, 1]) # DEBUG
         d.draw(x_pos=pos_next[i, 0, 0], y_pos=pos_next[i, 0, 1], color=body_objects[i].color, radius=body_objects[i].radius)
 
     d.end_frame()
+    
+    p_f = total_momentum(body_objects)
+    e_f = total_kinetic_energy(body_objects) + total_potential_energy(body_objects)
+
+    print(f"p_i: {p_i};    p_curr: {p_f}")
+    print(f"e_i: {e_i};    e_curr: {e_f}")
+
 
     initial_cm[1:,0] = pos_next[:,0]
     initial_cm[1:,1] = pos_next[:,1]
@@ -276,6 +296,9 @@ def update(dt):
     initial[:,0] = r_abs
     initial[:,1] = vel_abs
 
-pg.clock.schedule_interval(update, 1/fps)
-d.__run__()
+# pg.clock.schedule_interval(update, 1/fps)
+# d.__run__()
+if __name__ == "__main__":
+    pg.clock.schedule_interval(update, 1/fps)
+    d.__run__()
 ###

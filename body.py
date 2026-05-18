@@ -13,10 +13,10 @@ class Body:
         color=(255,0,0),
         radius=10.0,
     ):
-        self.position = position,
+        self.position = position
         self.velocity = velocity
         self.acceleration = acceleration
-        self.jerk = jerk,
+        self.jerk = jerk
         self.mass = mass
         self.color = color
         self.radius = radius
