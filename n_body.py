@@ -21,13 +21,13 @@ t_final = 10000
 
 ###
 # Hierarchical Orbit (Sun, Earth, Moon equivalent)
-# w = 10
-# initial = np.array([
-#     [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
-#     [ [0, 0, 0], [0, -0.0585, 0], [10000, 0, 0] ],   # Star (massive, slow)
-#     [ [300, 0, 0], [0, 5.7735, 0], [100, 0, 0] ],    # Planet (medium mass/distance)
-#     [ [320, 0, 0], [0, 8.0095, 0], [1, 0, 0] ],       # Moon (tiny mass, tightly orbiting planet)
-# ])
+w = 15
+initial = np.array([
+    [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
+    [ [0, 0, 0], [0, -0.0585, 0], [10000, 0, 0] ],   # Star (massive, slow)
+    [ [300, 0, 0], [0, 5.7735, 0], [100, 0, 0] ],    # Planet (medium mass/distance)
+    [ [320, 0, 0], [0, 8.0095, 0], [1, 0, 0] ],       # Moon (tiny mass, tightly orbiting planet)
+])
 ###
 
 ###
@@ -66,13 +66,13 @@ t_final = 10000
 ###
 
 ### 3-body  test with 1 collision and 1 in orbit
-w = 10
-initial = np.array([
-    [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
-    [ [97, 29, 0], [0.35, -0.8,  0], [1000, 0, 0] ], # B1
-    [ [192, -84, 0], [-0.3, 0.2, 0], [1000, 0, 0] ], # B2
-    [ [0.0, 0.0, 0.0], [-0.3, -1.8, 0], [100, 0, 0] ],               # B3
-])
+# w = 10
+# initial = np.array([
+#     [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
+#     [ [97, 29, 0], [0.35, -0.8,  0], [1000, 0, 0] ], # B1
+#     [ [192, -84, 0], [-0.3, 0.2, 0], [1000, 0, 0] ], # B2
+#     [ [0.0, 0.0, 0.0], [-0.3, -1.8, 0], [100, 0, 0] ],               # B3
+# ])
 ###
 
 ### Stable-ish hierarchical system with Trojans and moons.
@@ -107,7 +107,7 @@ initial = np.array([
 
 
 G = 1 # 6.674e-11
-fps = 60*20 # tick rate
+fps = 60*200 # tick rate
 
 def to_CM_ref(r_abs, vel_abs, mass, CM_only=False):
     bodies = len(r_abs) # number of true bodies + 1 

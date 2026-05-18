@@ -1,5 +1,4 @@
 import numpy as np 
-from rk import *
 import pyglet as pg 
 import draw as d 
 from body import Body 
@@ -46,7 +45,7 @@ def to_CM_ref(body_objects, CM_object, only_compute_CM=False):
         # v_abs to v_cm 
         body.velocity -= CM_object.velocity
 
-    return body_objects
+    return body_objects, CM_object
 
 # converts to absolute ref frame (absolute = origin)
 def to_abs_ref(body_objects, CM_object):
@@ -109,107 +108,65 @@ def kinetic_energy(body_objects):
 
     return kinetic 
 
+# kinetic energy of a single body in CM ref frame 
 def kinetic_energy_single(body_objects, body_index):
     i = body_index
     return 0.5 * body_objects[i].mass * (vec_mag(body_objects[i].velocity))**2
 
-# returns current momentum in CM ref frame 
-def momentum(body_objects):
-    # body is (assumed to be) in CM ref frame 
-    p = np.zeros(3) # [px, py, pz]
-    for body in body_objects:
-        p += body_objects.velocity * body_objects.mass
+# gravity diff eq in CM reference
+def fg(t, body_objects, body, body_index):
+    # body whose positin velocity are being updated 
+    body_new = body
 
-    return p 
-
-# returns negative gradient vector of a body at body_index in body_objects at current position in CM ref frame 
-def gradient_neg(body_objects, body_index):
-    grad_vec = np.zeros(3) # [dx, dy, dz]
-
+    # order reduction
+    body_new.position = body.velocity
     for i in range(len(body_objects)):
-        if (i != body_index):
-            delta_r = body_objects[i].position - body_objects[body_index].position
+        if i != body_index:
+            delta_r = body.position - body_objects[i].position
             delta_r_mag = vec_mag(delta_r)
 
-            # collision detection
-            if (delta_r_mag < (body_objects[i].radius + body_objects[body_index].radius)):
+            # handles collision
+            if (delta_r_mag < (body.radius + body_objects[i].radius)):
+                # create handle collision function 
                 continue
 
-            grad_vec += -G*body_objects[i].mass*body_objects[body_index].mass*delta_r / (delta_r_mag)**3
+            body_new.velocity += -G*body_objects[i].mass*delta_r / (delta_r_mag)**3
 
-    return grad_vec
+    return body_new
 
-def fg(t, i, bodies_arr):
-    def mag(vec): # returns magnitude of vec 
-        sum = 0
-        for e in vec:
-            sum += e**2
-        return np.sqrt(sum)
+def rk_single(f, t_i, body_objects, body_index, h=0.005):
+    body = body_objects[body_index]
 
-    position_next = bodies_arr[i].position
-    velocity_next = np.zeros(3, dtype=float)
-    # b1_next = np.zeros((2,3))
+    # k_1 ... k_4 are body objects 
+    k_1 = f(t, body_objects, body, body_index)
+    body.position += k_1.position*h/2
+    body.velocity += k_1.velocity*h/2 
 
-    # b1_next[0] = b1_old[1]7
-    for j in range(len(mass)):
-        if (i == j):
-            continue
-        delta_r = bodies_arr[i].position - bodies_arr[j].position
+    k_2 = f(t+h/2, body_objects, body, body_index)
+    body.position += k_2.position*h/2
+    body.velocity += k_2.velocity*h/2
 
-        # Handles collisions
-        # 1 is the width of the bodies. change this based on size of bodies
-        # NOTE: Mass isn't conserved; the mass of one of the w bodies involved in the collisions gets destroyed
-        if (mag(delta_r) < 1):
-            # TODO: Implement elastic collisions
-            # m1v1 = m2v2
-            # NOTE: COULD BE WRONG!! BAD!!!!! UNTESTED
-            # TODO: Handle deletion
-            position_next = 0
-            velocity_next = bodies_arr[i].velocity + bodies_arr[j].velocity
-            # b1_next[0] = 0
-            # b1_next[1] = 0
+    k_3 = f(t+h/2, body_objects, body, body_index)
+    body.position += k_3.position*h
+    body.velocity += k_3.velocity*h
 
-            continue
+    k_4 = f(t+h, body_objects, body, body_index)
 
-        velocity_next += -G * bodies_arr[j].mass * delta_r / (mag(delta_r)) ** 3
-        # b1_next[1] += -G*mass[i]*(delta_r) / (mag(delta_r))**3
+    t_next = t + h 
+    body_next = body_objects[body_index]
+    body_next.position = body_objects[body_index].position + h / 6 * (k_1.position + 2*k_2.position + 2*k_3.position + k_4.position)
+    body_next.velocity = body_objects[body_index].velocity + h / 6 * (k_1.velocity + 2*k_2.velocity + 2*k_3.velocity + k_4.velocity)
 
-    # return b1_next
-    body_next = copy.deepcopy(bodies_arr[i])
-    body_next.position = position_next
-    body_next.velocity = velocity_next
-    return body_next
+    return t_next, body_next
 
 # calculates next position based on 
-def calculate_position(body_objects, step=0.01):
-    body_objects_next = body_objects
-    for i in range(len(body_objects)):
-        potential_i = potential_energy_single(body_objects, i)
-        kinetic_i = kinetic_energy_single(body_objects, i)
-        total_i = potential_i + kinetic_i
-
-        # normalize then scale gradient vector
-        grad_vec = gradient_neg(body_objects, body_index)
-        grad_vec /= vec_mag(grad_vec)
-        grad_vec *= step
-
-        # temporarily make the change in the body_objects list
-        body_objects[i].position += grad_vec
-        potential_i_next = potential_energy_single(body_objects, i)
-        
-        # write then revert the change here so we get the original conditions
-        body_objects_next[i].position = body_objects[i].position
-        body_objects[i].position -= grad_vec
-
-        # solve for new kinetic energy and velocity magnitude
-        kinetic_i_next = total_i - potential_i_next
-        velocity_mag_next = (2 * kinetic_i_next / body_objects[i].mass) ** 0.5
-
-        # conserve momentum to get new velocity
-        
+def calculate_position(body_objects, body_index, ENERGY):
+    # U_old >= U_new
+    # U_old - U_new = K_new - K_old 
+    # sqrt(2/m * )
     return body_objects_next
 
-### WARN: New plan for calculating:
+### NOTE: New plan for calculating:
 #   First, run RK to get the force changes
 #   Then, remove any leftover momentum
 #   Lastly, rescale velocities to conserve energy
