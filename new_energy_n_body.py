@@ -375,7 +375,7 @@ def update(dt):
             color=body.color,
             radius=body.radius,
         )
-        print(body.position)
+        # print(body.position)
 
     d.end_frame()
 
