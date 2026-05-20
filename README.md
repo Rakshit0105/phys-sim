@@ -4,8 +4,8 @@ pip install numpy pyglet matplotlib panda3d
 ```
 matplotlib is not necessary if not plotting
 
-# Migration to Pyglet
-[Pyglet Docs](https://pyglet.readthedocs.io/en/latest/index.html)
+# Note:
+new_energy_n_body.py and n_body.py are the only ones that will currently run due to changes made to rendering. Other files haven't been updated with the new syntax yet.
 
 # To-do
 - [x] Gravity on Earth
@@ -25,7 +25,7 @@ matplotlib is not necessary if not plotting
   - [ ] add functions to support moving center of mass
   - [ ] add functions to model changing mass overtime
   - [x] energy support (to make it accurate to real life)
-  - [x] Handle situations when bodies collied and distance b/w them is 0, so d^2(r)/dt^2 isn't NaN
 - [ ] Particle simulation
 - [ ] Fluid simulation
 
+Switched from RK4 to velocity verlet for significant performance gains, and energy+momentum conservation. Look more into symplectic integrators, and hamiltonian
