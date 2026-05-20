@@ -194,6 +194,12 @@ def calculate_position(body_objects, t_i, ENERGY, MOMENTUM):
 
     return t_next, body_objects_next, ENERGY, MOMENTUM
 
+<<<<<<< HEAD
+=======
+# d.__init__(1280, 720, 64*w, 36*w)
+# d.__init__(720, 720, 36*w, 36*w)
+
+>>>>>>> aae901e (temp 3d renderer)
 # initialize bodies 
 t_curr = 0
 body_objects = []
@@ -218,4 +224,28 @@ def update(dt):
 
     d.start_frame()
 
+<<<<<<< HEAD
     
+=======
+    collide = False
+    t_next, body_objects_next, ENERGY, MOMENTUM = calculate_position(body_objects, t_curr, ENERGY, MOMENTUM)
+    t_curr, body_objects = t_next, body_objects_next
+
+    # ABSOLUTE REFERENCE BODY OBJECTS
+    absolute_objects = to_abs_ref(copy.deepcopy(body_objects), CM_object)
+    for body in absolute_objects:
+        d.draw(
+            x_pos=body.position[0],
+            y_pos=body.position[1],
+            color=body.color,
+            radius=body.radius
+        )
+
+    d.end_frame()
+
+# pg.clock.schedule_interval(update, 1/tick)
+# d.__run__()
+if __name__ == "__main__":
+    # pg.clock.schedule_interval(update, 1/tick)
+    d.init(720, 720, 36*w, 36*w)
+    d.__run__()
