@@ -35,10 +35,13 @@ Energy and momentum graphs for an 11 body gravitational system with velocity ver
 Total energy = -24902.30544431605; Total energy final (1000 seconds) = -24902.30544250108
 
 Note: Not sure what the spikes are. They are likely due to improper "collision" handling (there is no collision handling, instead 0 acceleration is added if the delta position is less than sum of radii, where the radii have a minimum radius of 1, despite "true" raidus being proportional to cbrt of mass, which would give sub pixel radii)
+
 [[./velocity_verlet_27_body_energy.png]]
 
 Zoomed in energy plot
+
 [[./velocity_verlet_27_body_energy_zoomed.png]]
 
 <p_x, p_y, p_z> represent each of the 3 lines. Total momentum = <687898.600061, 198487.305684, 0>; Total momentum final (1000 seconds) = <-733713.21844474, 3488328.45607243, 0.>
+
 [[./velocity_verlet_27_body_momentum.png]]
