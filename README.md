@@ -14,7 +14,7 @@ new_energy_n_body.py and n_body.py are the only ones that will currently run due
   - [ ] Reuse old shapes
 - [ ] Implement collisions
   - [ ] Come up with different models for bodies colliding
-  - [ ] Implement proper energy conservation during different types of collisions
+  - [ ] Supoort for different types of collisions (and respective energy+momentum changes)
 - [ ] Build a 3d renderer based on Panda3D
 - [x] Springs
 - [x] Diff eq. support
@@ -28,4 +28,10 @@ new_energy_n_body.py and n_body.py are the only ones that will currently run due
 - [ ] Particle simulation
 - [ ] Fluid simulation
 
-Switched from RK4 to velocity verlet for significant performance gains, and energy+momentum conservation. Look more into symplectic integrators, and hamiltonian
+Switched from RK4 to velocity verlet for significant performance gains, and energy+momentum conservation. 
+Energy and momentum graphs for an 11 body gravitational system:
+![[./velocity_verlet_11_body_energy.png]]
+
+![[./velocity_verlet_11_body_energy_zoomed.png]]
+
+![[./velocity_verlet_11_body_momentum.png]]

@@ -2,16 +2,18 @@ import numpy as np
 import pyglet as pg 
 import draw as d 
 from body import Body 
-import copy 
+import copy
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FormatStrFormatter
 
-t_final = 10000
+t_final = 1000
 G = 1 # 6.674e-11
 TICKS_PER_FRAME = 10 
 
 # initial conditions: [ [x,y,z], [vx,vy,vz], [m, 0, 0] ] per row 
 
 # The Montgomery-Chenciner Figure-8 Orbit
-# bodies = 11 
+# bodies = 3 
 # w = 5 # width of screen
 # initial = np.array([
 #     [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ], # CM
@@ -21,6 +23,7 @@ TICKS_PER_FRAME = 10
 # ]) # Add B-n rows for the Bn-th body
 
 # w = 25
+# bodies = 11
 # initial = np.array([
 #     [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ],  # CM
 #
@@ -65,39 +68,39 @@ initial = np.array([
 
     # Earth + 1 moon
     [ [-500.0, 0.0, 0.0], [0.0, -25.807, 0.0], [1.0, 0, 0] ], # B4 Earth
-    # [ [-496.0, 0.0, 0.0], [0.0, -25.307, 0.0], [0.012, 0, 0] ], # B5 Moon
+    [ [-496.0, 0.0, 0.0], [0.0, -25.307, 0.0], [0.012, 0, 0] ], # B5 Moon
 
     # Mars + 2 moons
     [ [0.0, -762.0, 0.0], [20.90, 0.0, 0.0], [0.107, 0, 0] ], # B6 Mars
-    # [ [0.0, -759.0, 0.0], [20.711, 0.0, 0.0], [0.000018, 0, 0] ], # B7 Phobos
-    # [ [0.0, -767.0, 0.0], [21.046, 0.0, 0.0], [0.000024, 0, 0] ], # B8 Deimos
+    [ [0.0, -759.0, 0.0], [20.711, 0.0, 0.0], [0.000018, 0, 0] ], # B7 Phobos
+    [ [0.0, -767.0, 0.0], [21.046, 0.0, 0.0], [0.000024, 0, 0] ], # B8 Deimos
 
     # Jupiter + 4 moons
     [ [2602.0, 0.0, 0.0], [0.0, 11.31, 0.0], [318.0, 0, 0] ], # B9 Jupiter
-    # [ [2620.0, 0.0, 0.0], [0.0, 15.51, 0.0], [0.015, 0, 0] ], # B10 Io
-    # [ [2578.0, 0.0, 0.0], [0.0, 7.67, 0.0], [0.008, 0, 0] ], # B11 Europa
-    # [ [2602.0, 32.0, 0.0], [-3.15, 11.31, 0.0], [0.025, 0, 0] ], # B12 Ganymede
-    # [ [2602.0, -42.0, 0.0], [2.75, 11.31, 0.0], [0.018, 0, 0] ], # B13 Callisto
+    [ [2620.0, 0.0, 0.0], [0.0, 15.51, 0.0], [0.015, 0, 0] ], # B10 Io
+    [ [2578.0, 0.0, 0.0], [0.0, 7.67, 0.0], [0.008, 0, 0] ], # B11 Europa
+    [ [2602.0, 32.0, 0.0], [-3.15, 11.31, 0.0], [0.025, 0, 0] ], # B12 Ganymede
+    [ [2602.0, -42.0, 0.0], [2.75, 11.31, 0.0], [0.018, 0, 0] ], # B13 Callisto
     #
     # Saturn + 5 moons
     [ [0.0, 4791.0, 0.0], [-8.33, 0.0, 0.0], [95.0, 0, 0] ], # B14 Saturn
-    # [ [12.0, 4791.0, 0.0], [-8.33, 2.81, 0.0], [0.000006, 0, 0] ], # B15 Mimas
-    # [ [-16.0, 4791.0, 0.0], [-8.33, -2.43, 0.0], [0.000018, 0, 0] ], # B16 Enceladus
-    # [ [0.0, 4811.0, 0.0], [-10.51, 0.0, 0.0], [0.0001, 0, 0] ], # B17 Tethys
-    # [ [0.0, 4767.0, 0.0], [-6.34, 0.0, 0.0], [0.00018, 0, 0] ], # B18 Dione
-    # [ [35.0, 4791.0, 0.0], [-8.33, 1.64, 0.0], [0.0225, 0, 0] ], # B19 Titan
+    [ [12.0, 4791.0, 0.0], [-8.33, 2.81, 0.0], [0.000006, 0, 0] ], # B15 Mimas
+    [ [-16.0, 4791.0, 0.0], [-8.33, -2.43, 0.0], [0.000018, 0, 0] ], # B16 Enceladus
+    [ [0.0, 4811.0, 0.0], [-10.51, 0.0, 0.0], [0.0001, 0, 0] ], # B17 Tethys
+    [ [0.0, 4767.0, 0.0], [-6.34, 0.0, 0.0], [0.00018, 0, 0] ], # B18 Dione
+    [ [35.0, 4791.0, 0.0], [-8.33, 1.64, 0.0], [0.0225, 0, 0] ], # B19 Titan
 
     # Uranus + 5 moons
     [ [-9600.0, 0.0, 0.0], [0.0, -5.89, 0.0], [14.5, 0, 0] ], # B20 Uranus
-    # [ [-9593.0, 0.0, 0.0], [0.0, -4.45, 0.0], [0.000011, 0, 0] ], # B21 Miranda
-    # [ [-9610.0, 0.0, 0.0], [0.0, -7.09, 0.0], [0.00022, 0, 0] ], # B22 Ariel
-    # [ [-9600.0, 13.0, 0.0], [-1.05, -5.89, 0.0], [0.00021, 0, 0] ], # B23 Umbriel
-    # [ [-9600.0, -18.0, 0.0], [0.89, -5.89, 0.0], [0.00059, 0, 0] ], # B24 Titania
-    # [ [-9576.0, 0.0, 0.0], [0.0, -5.12, 0.0], [0.0005, 0, 0] ], # B25 Oberon
+    [ [-9593.0, 0.0, 0.0], [0.0, -4.45, 0.0], [0.000011, 0, 0] ], # B21 Miranda
+    [ [-9610.0, 0.0, 0.0], [0.0, -7.09, 0.0], [0.00022, 0, 0] ], # B22 Ariel
+    [ [-9600.0, 13.0, 0.0], [-1.05, -5.89, 0.0], [0.00021, 0, 0] ], # B23 Umbriel
+    [ [-9600.0, -18.0, 0.0], [0.89, -5.89, 0.0], [0.00059, 0, 0] ], # B24 Titania
+    [ [-9576.0, 0.0, 0.0], [0.0, -5.12, 0.0], [0.0005, 0, 0] ], # B25 Oberon
 
     # Neptune + 1 moon
     [ [0.0, -15025.0, 0.0], [4.70, 0.0, 0.0], [17.1, 0, 0] ], # B26 Neptune
-    # [ [0.0, -15011.0, 0.0], [5.80, 0.0, 0.0], [0.0035, 0, 0] ], # B27 Triton (retrograde)
+    [ [0.0, -15011.0, 0.0], [5.80, 0.0, 0.0], [0.0035, 0, 0] ], # B27 Triton (retrograde)
 ])
 
 def to_CM_ref(body_objects, CM_object, only_compute_CM=False):
@@ -296,7 +299,7 @@ def acceleration(body_objects, body_index):
 
     return a 
 
-def calculate_position_verlet(body_objects, t_i, h=0.005):
+def calculate_position_verlet(body_objects, t_i, h=0.05):
     body_objects_next = copy.deepcopy(body_objects)
     t_next = 0
     for body_index in range(len(body_objects_next)):
@@ -321,9 +324,60 @@ def calculate_position_verlet(body_objects, t_i, h=0.005):
     # # DEBUG: 
     # print(f"t: {round(t_next,2)};   p_i: {p_i};    p_curr: {p_f}")
     # print(f"t: {round(t_next,2)};   e_i: {e_i};    e_curr: {e_f}")
+    # global t, e, p 
+    # t.append(t_next)
+    # e.append(e_f)
+    # p.append(p_f)
+
 
     return t_next, body_objects_next
 ###
+
+# t = []
+# e = []
+# p = []
+# LLM generated code for plotting 
+# def plot():#
+#     plt.figure(figsize=(10, 4))
+#
+#     # '.-' creates a line with tiny discrete point markers
+#     # markersize=2 keeps the points from blob-ing together
+#     # linewidth=0.5 keeps the connecting line subtle
+#     plt.plot(t, e, '.-', color='royalblue', markersize=2, linewidth=0.5, label='Total Energy')
+#
+#     plt.title('Total Energy over Time (Velocity Verlet)')
+#     plt.xlabel('Time (t)')
+#     plt.ylabel('Energy')
+#     plt.grid(True, which='both', linestyle='--', alpha=0.5)
+#
+#     # FORCE DECIMAL PRECISION ON Y-AXIS (e.g., 4 decimal places)
+#     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.4f'))
+#
+#     # OPTIONAL: Zoom past the outliers to see the actual energy conservation
+#     # Replace these numbers with values just above and below your baseline (~ -6819)
+#     # plt.ylim(-6819.5, -6818.5) 
+#
+#     plt.legend()
+#     plt.tight_layout()
+#     plt.show() # Displays the first graph
+#
+#     # --- GRAPH 2: TOTAL MOMENTUM ---
+#     plt.figure(figsize=(10, 4))
+#
+#     # Plotting momentum
+#     plt.plot(t, p, '.-', color='darkorange', markersize=2, linewidth=0.5, label='Total Momentum')
+#
+#     plt.title('Total Momentum over Time')
+#     plt.xlabel('Time (t)')
+#     plt.ylabel('Momentum')
+#     plt.grid(True, which='both', linestyle='--', alpha=0.5)
+#
+#     # Force decimal precision on momentum axis too
+#     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.4f'))
+#
+#     plt.legend()
+#     plt.tight_layout()
+#     plt.show() # Displays the second graph
 
 # initialize bodies 
 t_curr = 0
@@ -352,6 +406,7 @@ def update(dt):
     global MOMENTUM, ENERGY, body_objects_list, CM_object, t_curr
 
     if (t_curr > t_final):
+        # plot()
         return
 
     d.start_frame()
