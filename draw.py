@@ -53,6 +53,25 @@ class PandaPhysicsRenderer(ShowBase):
         self.WORLD_HEIGHT = world_height
         self.WORLD_DEPTH = world_depth
 
+
+
+        # Cap the internal render scale to prevent singular matrix errors
+        self.render_scale = 1000.0 / world_width if world_width > 1000 else 1.0
+
+        self.WINDOW_WIDTH = window_width
+        self.WINDOW_HEIGHT = window_height
+        
+        # Store original dimensions for legacy pixel conversions
+        self.ORIG_WORLD_WIDTH = world_width
+        self.ORIG_WORLD_HEIGHT = world_height
+
+        # Scale down the bounds handed to Panda3D
+        self.WORLD_WIDTH = world_width * self.render_scale
+        self.WORLD_HEIGHT = world_height * self.render_scale
+        self.WORLD_DEPTH = world_depth * self.render_scale
+
+
+
         # "pixels" keeps your old radius=10 behavior roughly similar.
         # "world" means radius is measured directly in simulation units/meters.
         self.radius_mode = radius_mode
@@ -105,7 +124,8 @@ class PandaPhysicsRenderer(ShowBase):
     def _to_panda_pos(self, x, y, z):
         # Preserve your old x/y plane.
         # Old y becomes vertical height.
-        return x, z, y
+        # return x, z, y
+        return x * self.render_scale, z * self.render_scale, y * self.render_scale
 
     def _radius_to_world(self, radius):
         if self.radius_mode == "world":
@@ -181,12 +201,21 @@ class PandaPhysicsRenderer(ShowBase):
         self.axes_np.hide()
 
     def set_world_width(self, width=64):
-        self.WORLD_WIDTH = width
+        # self.WORLD_WIDTH = width
+        self.ORIG_WORLD_WIDTH = width
+        self.render_scale = 1000.0 / width if width > 1000 else 1.0
+        self.WORLD_WIDTH = width * self.render_scale
+
+
         self._setup_camera()
         self._rebuild_axes()
 
     def set_world_height(self, height=36):
-        self.WORLD_HEIGHT = height
+        # self.WORLD_HEIGHT = height
+        self.ORIG_WORLD_HEIGHT = height
+        self.WORLD_HEIGHT = height * self.render_scale
+
+
         self._setup_camera()
         self._rebuild_axes()
 
@@ -220,10 +249,12 @@ class PandaPhysicsRenderer(ShowBase):
 
     # Legacy helpers. In Panda3D, rendering does not need these.
     def world_to_screen_x(self, x_pos):
-        return self.WINDOW_WIDTH / 2 + x_pos * self.WINDOW_WIDTH / self.WORLD_WIDTH
+        # return self.WINDOW_WIDTH / 2 + x_pos * self.WINDOW_WIDTH / self.WORLD_WIDTH
+        return self.WINDOW_WIDTH / 2 + x_pos * self.WINDOW_WIDTH / self.ORIG_WORLD_WIDTH
 
     def world_to_screen_y(self, y_pos):
-        return self.WINDOW_HEIGHT / 2 + y_pos * self.WINDOW_HEIGHT / self.WORLD_HEIGHT
+        # return self.WINDOW_HEIGHT / 2 + y_pos * self.WINDOW_HEIGHT / self.WORLD_HEIGHT
+        return self.WINDOW_HEIGHT / 2 + y_pos * self.WINDOW_HEIGHT / self.ORIG_WORLD_HEIGHT
 
     def run_with_update(self, update_func=None):
         if update_func is not None:

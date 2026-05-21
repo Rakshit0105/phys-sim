@@ -33,6 +33,8 @@ Switched from RK4 to velocity verlet for significant performance gains, and ener
 # Example System
 Energy and momentum graphs for an 11 body gravitational system with velocity verlet (time step = 0.05):
 Total energy = -6819.154250916657
+
+Note: The spikes in energy are when bodies "collide". Collisions aren't handled properly yet
 [[./velocity_verlet_11_body_energy.png]]
 
 Zoomed in energy plot
