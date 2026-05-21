@@ -29,9 +29,14 @@ new_energy_n_body.py and n_body.py are the only ones that will currently run due
 - [ ] Fluid simulation
 
 Switched from RK4 to velocity verlet for significant performance gains, and energy+momentum conservation. 
-Energy and momentum graphs for an 11 body gravitational system:
-![[./velocity_verlet_11_body_energy.png]]
 
-![[./velocity_verlet_11_body_energy_zoomed.png]]
+# Example System
+Energy and momentum graphs for an 11 body gravitational system with velocity verlet (time step = 0.05):
+Total energy = -6819.154250916657
+[[./velocity_verlet_11_body_energy.png]]
 
-![[./velocity_verlet_11_body_momentum.png]]
+Zoomed in energy plot
+[[./velocity_verlet_11_body_energy_zoomed.png]]
+
+<p_x, p_y, p_z> represent each of the 3 lines. Total momentum = <-0.0064815, 0.009429, 0.>
+[[./velocity_verlet_11_body_momentum.png]]
