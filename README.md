@@ -31,7 +31,7 @@ new_energy_n_body.py and n_body.py are the only ones that will currently run due
 Switched from RK4 to velocity verlet for significant performance gains, and energy+momentum conservation. 
 
 # Example System
-Energy and momentum graphs for an 11 body gravitational system with velocity verlet (time step = 0.05):
+Energy and momentum graphs for an 27 body gravitational system with velocity verlet (time step = 0.05):
 Total energy = -24902.30544431605; Total energy final (1000 seconds) = -24902.30544250108
 
 Note: Not sure what the spikes are. They are likely due to improper "collision" handling (there is no collision handling, instead 0 acceleration is added if the delta position is less than sum of radii, where the radii have a minimum radius of 1, despite "true" raidus being proportional to cbrt of mass, which would give sub pixel radii)
