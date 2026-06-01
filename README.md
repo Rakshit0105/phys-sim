@@ -16,6 +16,7 @@ new_energy_n_body.py and n_body.py are the only ones that will currently run due
   - [ ] Come up with different models for bodies colliding
   - [ ] Supoort for different types of collisions (and respective energy+momentum changes)
 - [ ] Build a 3d renderer based on Panda3D
+- [ ] Switch to Barnes-Hut method for approximations for particles
 - [x] Springs
 - [x] Diff eq. support
 - [x] Two-body problems
