@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import sys
 
-t_final = 100
+t_final = 500
 G = 1 # 6.674e-11
 TICKS_PER_FRAME = 10 
 
@@ -276,13 +276,13 @@ def calculate_position_rk(body_objects, t_i):
         body_objects_next.append(body_next)
     body_objects_next = np.array(body_objects_next)
 
-    e_i = ENERGY
-    e_f = total_kinetic_energy(body_objects_next) + total_potential_energy(body_objects_next)
-    p_i = MOMENTUM
-    p_f = total_momentum(body_objects_next)
+    # e_i = ENERGY
+    # e_f = total_kinetic_energy(body_objects_next) + total_potential_energy(body_objects_next)
+    # p_i = MOMENTUM
+    # p_f = total_momentum(body_objects_next)
     # DEBUG: 
-    print(f"t: {round(t_next,2)};   p_i: {p_i};    p_curr: {p_f}")
-    print(f"t: {round(t_next,2)};   e_i: {e_i};    e_curr: {e_f}")
+    # print(f"t: {round(t_next,2)};   p_i: {p_i};    p_curr: {p_f}")
+    # print(f"t: {round(t_next,2)};   e_i: {e_i};    e_curr: {e_f}")
 
     return t_next, body_objects_next
 
@@ -427,15 +427,15 @@ def update(dt):
     global MOMENTUM, ENERGY, body_objects_list, CM_object, t_curr
 
     if (t_curr > t_final):
-        plot()
+        # plot()
         sys.exit(0)
         # return
 
     d.start_frame()
     # print("FRAME", t_curr, "dt =", dt)
     # compute next position
-    # t_next, body_objects_next = calculate_position_rk(body_objects_list, t_curr)
-    t_next, body_objects_next = calculate_position_verlet(body_objects_list, t_curr)
+    t_next, body_objects_next = calculate_position_rk(body_objects_list, t_curr)
+    # t_next, body_objects_next = calculate_position_verlet(body_objects_list, t_curr)
 
     # prep for next loop 
     t_curr = t_next
