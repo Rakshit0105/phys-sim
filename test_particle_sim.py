@@ -7,13 +7,13 @@ from numba import njit, prange
 
 
 t_final = 500
-TICKS_PER_FRAME = 10
+TICKS_PER_FRAME = 1
 
 # Simulation settings
-bodies = 250
+bodies = 1000
 w = 20
 
-TIME_STEP = 0.05
+TIME_STEP = 0.005
 PARTICLE_RADIUS = 5.0
 PARTICLE_MASS = 1.0
 PARTICLE_SPEED = 120.0

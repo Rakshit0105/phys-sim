@@ -7,10 +7,12 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import sys
 
-t_final = 500
+t_final = 1000
 G = 1 # 6.674e-11
-TICKS_PER_FRAME = 10 
-
+TICKS_PER_FRAME = 1 
+t = []
+e = []
+p = []
 # initial conditions: [ [x,y,z], [vx,vy,vz], [m, 0, 0] ] per row 
 
 # The Montgomery-Chenciner Figure-8 Orbit
@@ -232,7 +234,7 @@ def fg(t, body_objects, body, body_index):
 
     return body_new
 
-def rk_single(f, t, body_objects, body_index, h=0.005):
+def rk_single(f, t, body_objects, body_index, h=0.5):
     body = body_objects[body_index]
     body_tmp = copy.deepcopy(body_objects[body_index])
 
@@ -283,6 +285,18 @@ def calculate_position_rk(body_objects, t_i):
     # DEBUG: 
     # print(f"t: {round(t_next,2)};   p_i: {p_i};    p_curr: {p_f}")
     # print(f"t: {round(t_next,2)};   e_i: {e_i};    e_curr: {e_f}")
+    # e_i = ENERGY
+    # e_f = total_kinetic_energy(body_objects_next) + total_potential_energy(body_objects_next)
+    # p_i = MOMENTUM
+    # p_f = total_momentum(body_objects_next)
+
+    # DEBUG: 
+    # # print(f"t: {round(t_next,2)};   p_i: {p_i};    p_curr: {p_f}")
+    # # print(f"t: {round(t_next,2)};   e_i: {e_i};    e_curr: {e_f}")
+    # global t, e, p 
+    # t.append(t_next)
+    # e.append(e_f)
+    # p.append(p_f)
 
     return t_next, body_objects_next
 
@@ -308,7 +322,7 @@ def acceleration(body_objects, body_index):
 
     return a 
 
-def calculate_position_verlet(body_objects, t_i, h=0.05):
+def calculate_position_verlet(body_objects, t_i, h=0.005):
     body_objects_next = copy.deepcopy(body_objects)
     t_next = 0
     for body_index in range(len(body_objects_next)):
@@ -326,26 +340,23 @@ def calculate_position_verlet(body_objects, t_i, h=0.05):
     t_next = t_i + h
 
     # if t_next >= (t_final - 1):
-    e_i = ENERGY
-    e_f = total_kinetic_energy(body_objects_next) + total_potential_energy(body_objects_next)
-    p_i = MOMENTUM
-    p_f = total_momentum(body_objects_next)
+    # e_i = ENERGY
+    # e_f = total_kinetic_energy(body_objects_next) + total_potential_energy(body_objects_next)
+    # p_i = MOMENTUM
+    # p_f = total_momentum(body_objects_next)
 
     # DEBUG: 
     # print(f"t: {round(t_next,2)};   p_i: {p_i};    p_curr: {p_f}")
     # print(f"t: {round(t_next,2)};   e_i: {e_i};    e_curr: {e_f}")
-    global t, e, p 
-    t.append(t_next)
-    e.append(e_f)
-    p.append(p_f)
+    # global t, e, p 
+    # t.append(t_next)
+    # e.append(e_f)
+    # p.append(p_f)
 
 
     return t_next, body_objects_next
 ###
 
-t = []
-e = []
-p = []
 # LLM generated code for plotting 
 def plot():#
     plt.figure(figsize=(10, 4))
@@ -434,8 +445,8 @@ def update(dt):
     d.start_frame()
     # print("FRAME", t_curr, "dt =", dt)
     # compute next position
-    t_next, body_objects_next = calculate_position_rk(body_objects_list, t_curr)
-    # t_next, body_objects_next = calculate_position_verlet(body_objects_list, t_curr)
+    # t_next, body_objects_next = calculate_position_rk(body_objects_list, t_curr)
+    t_next, body_objects_next = calculate_position_verlet(body_objects_list, t_curr)
 
     # prep for next loop 
     t_curr = t_next

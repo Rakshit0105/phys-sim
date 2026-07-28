@@ -194,12 +194,6 @@ def calculate_position(body_objects, t_i, ENERGY, MOMENTUM):
 
     return t_next, body_objects_next, ENERGY, MOMENTUM
 
-<<<<<<< HEAD
-=======
-# d.__init__(1280, 720, 64*w, 36*w)
-# d.__init__(720, 720, 36*w, 36*w)
-
->>>>>>> aae901e (temp 3d renderer)
 # initialize bodies 
 t_curr = 0
 body_objects = []
@@ -224,9 +218,6 @@ def update(dt):
 
     d.start_frame()
 
-<<<<<<< HEAD
-    
-=======
     collide = False
     t_next, body_objects_next, ENERGY, MOMENTUM = calculate_position(body_objects, t_curr, ENERGY, MOMENTUM)
     t_curr, body_objects = t_next, body_objects_next
