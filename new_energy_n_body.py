@@ -9,7 +9,7 @@ import sys
 
 t_final = 1000
 G = 1 # 6.674e-11
-TICKS_PER_FRAME = 1 
+TICKS_PER_FRAME = 1
 t = []
 e = []
 p = []
@@ -206,7 +206,7 @@ def kinetic_energy_single(body_objects, body_index):
 def total_momentum(body_objects):
     momentum = np.zeros(3) # [px, py, pz]
     for body in body_objects:
-        momentum += body.mass * body.position
+        momentum += body.mass * body.velocity
 
     return momentum
 
